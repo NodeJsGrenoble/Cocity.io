@@ -40,8 +40,20 @@ angular.module('components', []).
     link: (scope, element, attrs, tabsCtrl) ->
       tabsCtrl.addPane(scope)
     template: '''
-      <div class="tab-pane" ng-class="{active: selected}" ng-transclude>
+      <div class="tab-pane" ng-class="{'is-active': selected}" ng-transclude>
       </div>
     '''
     replace: true
+  ).
+  controller('AppCtrl', ($scope) ->
+    $scope.channels = [
+      {
+        name: 'p0rn',
+        users: 34
+      },
+      {
+        name: 'redbull',
+        users: 54
+      }
+    ]
   )

@@ -27,6 +27,8 @@ $tab-bar-link-color: #AAA;
 $tab-bar-link-bg--active: darken($tab-bar-bg, 4%);
 $tab-bar-link-color--active: #000;
 
+$text-color: #212121;
+
 .header{
   background: $header-bg-color;
   @include pie-clearfix;
@@ -163,6 +165,14 @@ $tab-bar-link-color--active: #000;
   }
 }
 
+.tab-pane{
+  display: none;
+
+  &.is-active{
+    display: block;
+  }
+}
+
 #nav-toggle{
   @extend .ss-icon;
   position: absolute;
@@ -181,5 +191,33 @@ $tab-bar-link-color--active: #000;
   }
   #nav-toggle {
     display: none;
+  }
+}
+
+%tab-pane{
+  width: 90%;
+  margin: 20px auto;
+}
+
+.channels{
+  @extend %tab-pane;
+}
+
+.tab-pane__title{
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 1.1em;
+}
+
+.chan{
+  float: left;
+  margin-right: 5px;
+  a{
+    text-decoration: none;
+    color: $text-color;
+    display: inline-block;
+    padding: .6em 1em;
+    background: #EEE;
+    border: 1px solid #DDD;
   }
 }
