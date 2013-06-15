@@ -1,5 +1,185 @@
 @import "compass";
 
+@import "partials/_mixins";
+@import "compass/reset";
+
+@include font-face("SS Standard", font-files("ss-standard.woff", "ss-standard.ttf", "ss-standard.svg"), "ss-standard.eot", normal, normal);
+
 body{
   font-family: "Open sans", sans-serif;
+}
+
+*{
+  @include box-sizing(border-box);
+}
+
+$header-bg-color: #242424;
+$header-link-color: #989898;
+$header-link-color--hover: #FAFAFA;
+$header-link-bg--active: #000;
+$header-logo-color: #FAFAFA;
+$header-button-bg: #2ecc71;
+$header-button-color: #FFF;
+$header-height: 40px;
+
+$tab-bar-bg: #FFF;
+$tab-bar-link-color: #AAA;
+$tab-bar-link-bg--active: darken($tab-bar-bg, 4%);
+$tab-bar-link-color--active: #000;
+
+.header{
+  background: $header-bg-color;
+  @include pie-clearfix;
+  position: relative;
+  box-shadow: 0 1px 0 darken($header-bg-color, 20%);
+}
+
+.header__nav{
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  line-height: $header-height;
+
+  &.opened{
+    max-height: 0px;
+  }
+
+  &.closed{
+    display: none;
+  }
+
+  a{
+    display: inline-block;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 0 1em;
+    color: $header-link-color;
+    @include transition(color .2s linear, background .2s linear);
+
+    &:hover{
+      color: $header-link-color--hover;
+    }
+
+    &.active, &:active{
+      background: $header-link-bg--active;
+    }
+  }
+
+  ul{
+    @include horizontal-list(10px);
+  }
+
+  &.opened {
+    max-height: 9999px;
+    position: static;
+    left: 0px;
+
+    ul{
+      width: 100%;
+      background: $header-bg-color;
+    }
+
+    li{
+      display: block;
+      float: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+.header__logo{
+  text-align: center;
+  font-weight: 700;
+  color: $header-logo-color;
+  font-size: $header-height/2;
+  line-height: $header-height;
+}
+
+%button-squared{
+  text-decoration: none;
+  background: $header-button-bg;
+  color: $header-button-color;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+.header__button{
+  float: right;
+  display: inline-block;
+  @extend %button-squared;
+  padding: 0 1.1em;
+  line-height: $header-height;
+  font-size: 14px;
+
+  i{
+    display: inline-block;
+    margin-right: 5px;
+  }
+}
+
+.ss-icon{
+  font-family: 'SS Standard';
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: none;
+  text-rendering: optimizeLegibility;
+  white-space: nowrap;
+  -webkit-font-feature-settings: "liga", "dlig";
+  -moz-font-feature-settings: "liga=1, dlig=1";
+  -moz-font-feature-settings: "liga", "dlig";
+  -ms-font-feature-settings: "liga", "dlig";
+  -o-font-feature-settings: "liga", "dlig";
+  font-feature-settings: "liga", "dlig";
+  -webkit-font-smoothing: antialiased;
+}
+
+.tab-bar{
+  @include pie-clearfix;
+  background: $tab-bar-bg;
+  border-bottom: 1px solid darken($tab-bar-bg, 8%);
+
+  .tab-bar__tab{
+    float: left;
+    width: (100%/3);
+    border-right: 1px solid darken($tab-bar-bg, 8%);
+  }
+
+  .tab-bar__link{
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
+    color: $tab-bar-link-color;
+    display: block;
+    text-align: center;
+    line-height: $header-height;
+    text-decoration: none;
+
+    &.is-active{
+      background: $tab-bar-link-bg--active;
+      color: $tab-bar-link-color--active;
+    }
+  }
+}
+
+#nav-toggle{
+  @extend .ss-icon;
+  position: absolute;
+  line-height: $header-height;
+  text-decoration: none;
+  color: $header-link-color--hover;
+  padding: 0 1em;
+}
+
+@media screen and (min-width: 40em) {
+  .header__nav {
+    position: relative;
+  }
+  .header__nav.closed {
+    max-height: none;
+  }
+  #nav-toggle {
+    display: none;
+  }
 }

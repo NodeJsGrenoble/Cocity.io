@@ -1,4 +1,4 @@
-html
+html(ng-app="")
   head
     each script in scripts
       script(src=script)
@@ -6,7 +6,7 @@ html
     link(href='/css/main.css', rel='stylesheet', type='text/css')
   body
     header.header
-      nav.header__nav
+      nav.header__nav#nav
         ul
           li
             a(href="#") Mes posts
@@ -14,6 +14,8 @@ html
             a(href="#") Notifications
           li
             a(href="#") Geoloc
-      h1.header__site-name CoCity
-      a.header__button edit
+      h1.header__logo CoCity
+      a.header__button
+        i.ss-icon edit
+        span Post
     block content
