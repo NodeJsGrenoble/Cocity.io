@@ -12,11 +12,12 @@ require("zappajs") 4500, ->
 
   view_extend =
     scripts: [
-          "/zappa/Zappa-simple.js",
-          "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js",
-          "/index.js",
-          "/js/responsive-nav.min.js",
-          "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js",
+          "/zappa/Zappa-simple.js"
+          "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"
+          "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"
+          "/index.js"
+          "/js/responsive-nav.min.js"
+          "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
           "/js/script.js"
         ]
 
@@ -27,6 +28,7 @@ require("zappajs") 4500, ->
     $ =>
       navigator.geolocation?.getCurrentPosition (pos)->
         console.log "postition", pos
+
       hashtags = location.href.split(/\//)[3..-1]
 
       $("#txt").keyup (e) =>
@@ -34,9 +36,11 @@ require("zappajs") 4500, ->
           @emit "message", $("#txt").val()
           $("#txt").val("")
 
+      console.log 
       @connect()
 
       first_connection = true
+      ###
       @on connect: =>
         window.location.reload() unless first_connection
         first_connection = false
@@ -59,6 +63,7 @@ require("zappajs") 4500, ->
               console.log "Joining #{hashtag}"
               @emit "join", hashtag , (users) ->
                 console.log "Users in #{hashtag}", users.length
+      ###
 
 
       @on joined: ->
@@ -69,9 +74,6 @@ require("zappajs") 4500, ->
 
       @on room: ->
         console.log "room", @data
-
-      @on room_update: ->
-        console.log "room_update", @data.room, @data.users.num
 
       @on "message": ->
        $("#room").append @data + "<br/>"

@@ -33,12 +33,11 @@
 
   @on list_rooms: ->
     console.log "List rooms", @io.sockets.manager.rooms
-    toRet = {}
-    _(@io.sockets.manager.rooms).each (sockets, room) -> 
-      console.log "room", room, sockets
+    @ack? _(@io.sockets.manager.rooms).chain().map (sockets, room) -> 
       if room.length > 1
-        toRet[room.slice(1)] = users: num: sockets.length
-    @ack toRet
+        name: room.slice(1)
+        users: sockets.length
+    .compact().value()
 
   @on me: (who)->
     @socket.set "me", who, =>
@@ -68,8 +67,8 @@
         @join @data
 
         @broadcast_to "", "room_update",
-          room: @data
-          users: num: users.length + 1
+          name: @data
+          users: users.length + 1
 
 
 
@@ -82,10 +81,14 @@
           room: name
           id: @id
 
-        @get_room_users name, (users) =>
+        @get_room_users name.slice(1), (users) =>
           @broadcast
             room: name
             users: num: users.length
+
+          @broadcast_to "", "room_update",
+            name: @data
+            users: users.length
 
 
   @on disconnect: leave
