@@ -4,6 +4,8 @@ require("zappajs") 4500, ->
 
   @set "view engine": "jade"
 
+  @include "./lib/room_manager.coffee"
+
   @get "/": ->
     @render "index"
  
@@ -25,3 +27,10 @@ require("zappajs") 4500, ->
     console.log "new message".rainbow, @data
     @broadcast "message", @data
     @emit "message", @data
+
+
+  @get "/*": ->
+    console.log hashtags = @params[0].split /\//
+    @render "index", 
+      hashtags: hashtags
+  
