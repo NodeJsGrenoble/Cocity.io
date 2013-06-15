@@ -1,9 +1,3 @@
-$ ->
-  navigation = responsiveNav("#nav", {
-    label: "list"
-    openPos: "static"
-  })
-
 angular.module('components', []).
   directive('tabs', ->
     restrict: 'E'
@@ -74,26 +68,49 @@ angular.module('components', []).
           ack?.apply socket, args
   ).
   controller('AppCtrl', ($scope, socket, hashchange) ->
-
+    
+    window.scope = $scope
+    
     first_connection = true
 
     $scope.channels = []
     $scope.current_channels = []
+    $scope.messages = []
+    $scope.message = 
+      content: "Enter your message here"
+
+    $scope.me = 
+      username: "Anon" + (Math.round(Math.random() * 90000) + 10000)
+      avatar: ""
+      userAgent: navigator.userAgent
 
     $scope.$watch "channels", (n,o) ->
       console.log "channels, n", n, "o", o
     , true
 
+    $scope.sendMessage = ->
+      console.log "Sending.Message", $scope.message.content
+      socket.emit "post", 
+        author: $scope.me.username
+        content: $scope.message.content
+        hashtags: $scope.current_channels
+
     add_or_update_channel = (room) ->
-      if chan = _($scope.channels).find((chan) -> chan.name is room.name)
-        chan.users = room.users
-      else
+      unless update_channel_state room.name, room
         $scope.channels.push room
+
+    add_or_not_message = (msg) ->
+      unless _($scope.messages).find((message) -> message.id is msg.id)
+        $scope.messages.push msg
 
     update_channel_state = (name, state) ->
       if chan = _($scope.channels).find((chan) -> chan.name is name)
+        console.log "Found channel #{name}"
         for k, v of state
+          console.log "Updating channel #{name}.#{k} = #{v}"
           chan[k] = v
+      else
+        console.log "Not found channel #{name}"
 
 
     socket.on "connect", ->
@@ -104,16 +121,19 @@ angular.module('components', []).
         if new_arr is old_arr
           old_arr = []
         # Chan to Join
-        for chan in _(new_arr).difference(old_arr)
+        _(new_arr).difference(old_arr).forEach (chan) ->
           console.log "Joining #{chan}"
 
           socket.emit "join", chan , (users) ->
-            console.log "Users in #{chan}", users.length
-            update_channel_state chan, joined: true
+            console.log "Joined #{chan}, Users", users.length
+            add_or_update_channel 
+              name: chan
+              users: users.length
+              joined: true
 
         console.log "leave",  _(old_arr).difference(new_arr)
         # Chan to Leave
-        for chan in _(old_arr).difference(new_arr)
+        _(old_arr).difference(new_arr).forEach (chan) ->
           console.log "Leaving #{chan}"
           socket.emit "leave", chan
           update_channel_state chan, joined: false
@@ -131,20 +151,21 @@ angular.module('components', []).
         window.location.reload()
       first_connection = false
       # Who am I ?
-      socket.emit "me",
-        username: "Anon" + (Math.round(Math.random() * 90000) + 10000)
-        avatar: ""
-        userAgent: navigator.userAgent
-        =>
-
-          # List Rooms
-          socket.emit "list_rooms", (rooms) ->
-            console.log "list_rooms", rooms
-            add_or_update_channel room for room in rooms
+      socket.emit "me", $scope.me, =>
+        # List Rooms
+        socket.emit "list_rooms", (rooms) ->
+          console.log "list_rooms", rooms
+          add_or_update_channel room for room in rooms
 
     socket.on "room_update", (room) ->
       console.log "room_update", room
       add_or_update_channel room
+
+    socket.on "post", (post) ->
+      console.log "post", post
+      if (_(post.hashtags).intersection($scope.current_channels).length > 0) or 
+        ($scope.current_channels.length is 0)
+          add_or_not_message post
 
   )
 
