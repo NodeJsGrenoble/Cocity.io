@@ -15,11 +15,11 @@ block content
                 a(href="#", class="message__hash", ng-repeat='hash in message.hashtags')
                   # {{ hash }}
         .post
-          button.post__submit
+          button.post__submit(ng-click="sendMessage()")
             i.ss-icon send
             span Send
           .post__message
-            textarea
+            textarea(ng-model="message.content")
       pane(title="Maps")
         .map
           #map

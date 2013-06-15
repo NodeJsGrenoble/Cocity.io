@@ -39,60 +39,6 @@ body{
   box-shadow: 0 1px 0 darken($header-bg-color, 20%);
 }
 
-.header__nav{
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  line-height: $header-height;
-
-  &.opened{
-    max-height: 0px;
-  }
-
-  &.closed{
-    display: none;
-  }
-
-  a{
-    display: inline-block;
-    text-decoration: none;
-    font-size: 14px;
-    padding: 0 1em;
-    color: $header-link-color;
-    @include transition(color .2s linear, background .2s linear);
-
-    &:hover{
-      color: $header-link-color--hover;
-    }
-
-    &.active, &:active{
-      background: $header-link-bg--active;
-    }
-  }
-
-  ul{
-    @include horizontal-list(10px);
-  }
-
-  &.opened {
-    max-height: 9999px;
-    position: static;
-    left: 0px;
-
-    ul{
-      width: 100%;
-      background: $header-bg-color;
-    }
-
-    li{
-      display: block;
-      float: none;
-      margin: 0;
-      padding: 0;
-    }
-  }
-}
-
 .header__logo{
   text-align: center;
   font-weight: 700;

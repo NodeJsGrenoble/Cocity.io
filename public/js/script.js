@@ -3,15 +3,6 @@
   var initialize,
     __slice = [].slice;
 
-  $(function() {
-    var navigation;
-
-    return navigation = responsiveNav("#nav", {
-      label: "list",
-      openPos: "static"
-    });
-  });
-
   angular.module('components', []).directive('tabs', function() {
     return {
       restrict: 'E',
@@ -103,6 +94,7 @@
   }).controller('AppCtrl', function($scope, socket, hashchange) {
     var add_or_update_channel, first_connection, update_channel_state;
 
+    window.scope = $scope;
     first_connection = true;
     $scope.channels = [];
     $scope.current_channels = [];
