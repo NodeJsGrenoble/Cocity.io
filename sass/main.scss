@@ -273,6 +273,7 @@ $post-bg-color: #FFF;
 
 .post{
   height: 8%;
+  min-height: 50px;
   position: fixed;
   bottom: 0px;
   background: $post-bg-color;
@@ -283,20 +284,25 @@ $post-bg-color: #FFF;
 
 .post__message{
   border: none;
-  height: 100%;
-  margin: 10px 1%;
+  width: 90%;
 
-  textarea{
-    max-width: 100%;
-    width: auto;
-    border: 1px dashed #CCC;
-    font-family: "Open sans", sans-serif;
-    font-size: 14px;
+  @include mq-max-w(890px){
+    width: 85%;
   }
 
-  &:focus{
-    outline: none;
-    border: 1px solid #CCC;
+  textarea{
+    width: 100%;
+    font-family: "Open sans", sans-serif;
+    font-size: 14px;
+    border: none;
+    padding: 5px 10px;
+    margin: 0;
+    height: 100%;
+
+    &:focus{
+      outline: none;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.2);
+    }
   }
 }
 
@@ -308,8 +314,7 @@ $post-bg-color: #FFF;
 
 .post__submit{
   float: right;
-  width: 100px;
-  margin-left: 5px;
+  width: 10%;
   height: 100%;
   display: block;
   @extend %button-squared;
@@ -323,6 +328,25 @@ $post-bg-color: #FFF;
     margin-right: 8px;
     position: relative;
     top: 2px;
+  }
+
+  @include mq-max-w(890px){
+    width: 15%;
+  }
+
+  @include mq-max-w(550px){
+    font-size: 14px;
+  }
+
+  @include mq-max-w(460px){
+    font-size: 18px;
+    span{
+      display: none;
+    }
+
+    i{
+      margin-right: 0px;
+    }
   }
 }
 
