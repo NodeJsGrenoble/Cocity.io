@@ -3,10 +3,15 @@ require "colors"
 require("zappajs") 4500, ->
 
   @set "view engine": "jade"
+  @use "static"
 
   @get "/": ->
-    @render "index"
- 
+    @render "index", scripts: [
+          "/zappa/Zappa-simple.js",
+          "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js",
+          "/index.js"
+        ]
+
   @client "/index.js": ->
     $ =>
       $("#txt").keyup (e) =>
@@ -15,9 +20,8 @@ require("zappajs") 4500, ->
           $("#txt").val("")
       @connect()
       @on "message": ->
-       console.log "receiving ", @data
        $("#room").append @data + "<br/>"
-    
+
 
 #  @view "index": -
   @on connection: -> console.log "Connected".green
