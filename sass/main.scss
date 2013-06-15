@@ -1,5 +1,66 @@
 @import "compass";
 
+@import "partials/_mixins";
+@import "compass/reset";
+
 body{
   font-family: "Open sans", sans-serif;
+}
+
+*{
+  @include box-sizing(border-box);
+}
+
+$header-bg-color: #242424;
+$header-link-color: #989898;
+$header-link-color--hover: #FAFAFA;
+$header-link-bg--active: #000;
+$header-button-bg: #2ecc71;
+$header-button-color: #FFF;
+
+.header{
+  background: $header-bg-color;
+}
+
+.header__nav{
+  float: left;
+
+  a{
+    display: inline-block;
+    text-decoration: none;
+    font-size: 14px;
+    padding: .7em 1em;
+    color: $header-link-color;
+    @include transition(color .2s linear, background .2s linear);
+
+    &:hover{
+      color: $header-link-color--hover;
+    }
+
+    &.active, &:active{
+      background: $header-link-bg--active;
+    }
+  }
+
+  ul{
+    @include horizontal-list(10px);
+  }
+}
+
+.header__logo{
+  display: inline-block;
+  text-align: center;
+}
+
+%button-squared{
+  text-decoration: none;
+  background: $header-button-bg;
+  color: $header-button-color;
+}
+
+.header__button{
+  float: right;
+  display: inline-block;
+  @extend %button-squared;
+  padding: .6em;
 }
