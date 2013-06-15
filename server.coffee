@@ -8,16 +8,6 @@ require("zappajs") 4500, ->
   @use "static"
   @io.set "log level", 0
 
-<<<<<<< HEAD
-  @get "/": ->
-    @render "index", scripts: [
-          "/zappa/Zappa-simple.js",
-          "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js",
-          "/index.js",
-          "/js/responsive-nav.min.js",
-          "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js",
-          "https://maps.googleapis.com/maps/api/js?key=AIzaSyALgyOJvkCbURI1QyHP_ahk4M5GfSDvNsg&sensor=false",
-=======
   @include "./lib/room_manager.coffee"
 
   view_extend =
@@ -28,7 +18,7 @@ require("zappajs") 4500, ->
           "/index.js"
           "/js/responsive-nav.min.js"
           "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
->>>>>>> ebc02d814ed97d8094fe154b56ac6a1626f13adb
+          "https://maps.googleapis.com/maps/api/js?key=AIzaSyALgyOJvkCbURI1QyHP_ahk4M5GfSDvNsg&sensor=false"
           "/js/script.js"
         ]
 
@@ -47,7 +37,7 @@ require("zappajs") 4500, ->
           @emit "message", $("#txt").val()
           $("#txt").val("")
 
-      console.log 
+      console.log
       @connect()
 
       first_connection = true
@@ -57,9 +47,9 @@ require("zappajs") 4500, ->
         first_connection = false
         console.log "Connected"
 
-        
+
         console.log "emit, me"
-        @emit "me", 
+        @emit "me",
           username: "Anon" + (Math.round(Math.random() * 90000) + 10000)
           avatar: "/img/anon_user.jpg"
           userAgent: navigator.userAgent
@@ -96,4 +86,4 @@ require("zappajs") 4500, ->
   # Rooms as middle war for dynamic routes
   @use (req, res, next) ->
     res.render "index", view_extend
-  
+

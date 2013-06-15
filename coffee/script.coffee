@@ -60,7 +60,7 @@ angular.module('components', []).
   factory("socket", ($rootScope) ->
     socket = io.connect()
     console.log "connected?"
-    on: (event, cb) -> 
+    on: (event, cb) ->
       socket.on event, (args...) ->
         $rootScope.$apply ->
           cb.apply socket, args
@@ -103,7 +103,7 @@ angular.module('components', []).
         # Trick to join on first init
         if new_arr is old_arr
           old_arr = []
-        # Chan to Join 
+        # Chan to Join
         for chan in _(new_arr).difference(old_arr)
           console.log "Joining #{chan}"
 
@@ -112,14 +112,14 @@ angular.module('components', []).
             update_channel_state chan, joined: true
 
         console.log "leave",  _(old_arr).difference(new_arr)
-        # Chan to Leave  
+        # Chan to Leave
         for chan in _(old_arr).difference(new_arr)
           console.log "Leaving #{chan}"
           socket.emit "leave", chan
           update_channel_state chan, joined: false
-      
+
       , true
-      
+
       hashchange.on current_channel = (hash) ->
         console.log "new hash", (hash ? window.location.hash).split(/\#/)[1..-1]
         $scope.current_channels = (hash ? window.location.hash).split(/\#/)[1..-1]
@@ -147,3 +147,23 @@ angular.module('components', []).
       add_or_update_channel room
 
   )
+
+initialize = () ->
+  mapOptions = {
+    center: new google.maps.LatLng(40.705578, -73.978004)
+    zoom: 8
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  map = new google.maps.Map( document.getElementById("map"), mapOptions)
+
+  centerMap = (position) ->
+    lat = position.coords.latitude
+    lng = position.coords.longitude
+
+    map.setCenter(new google.maps.LatLng(lat,lng))
+
+  # Center if geoloc
+  if navigator.geolocation
+    navigator.geolocation.getCurrentPosition(centerMap)
+
+google.maps.event.addDomListener(window, 'load', initialize)

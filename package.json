@@ -4,7 +4,9 @@
   "description": "",
   "dependencies": {
     "zappajs": "~0.4.21",
-    "jade": "~0.31.2"
+    "jade": "~0.31.2",
+    "q": "~0.9.6",
+    "underscore": "~1.4.4"
   },
   "devDependencies": {
     "colors": "~0.6.0-1"
