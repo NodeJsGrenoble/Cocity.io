@@ -1,6 +1,9 @@
 require "colors"
 
-require("zappajs") ->
+require("zappajs") 4500, ->
+
+  @set "view engine": "jade"
+
   @get "/": ->
     @render "index"
  
@@ -16,20 +19,7 @@ require("zappajs") ->
        $("#room").append @data + "<br/>"
     
 
-  @view "index": ->
-    html ->
-      head ->
-        script src:"/zappa/Zappa-simple.js"
-        script src:"//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"
-        script src:"/index.js"
-      body ->
-        h1 "Test #{if @home then "La Home" else "Pas la home"}"
-        div "#room", ""
-        input "#txt", type:"text"
-      toto ->
-        "test"
-
-  
+#  @view "index": -
   @on connection: -> console.log "Connected".green
   @on message: ->
     console.log "new message".rainbow, @data
