@@ -1,0 +1,12 @@
+{
+  "name": "Cocity",
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "zappajs": "~0.4.21",
+    "jade": "~0.31.2"
+  },
+  "devDependencies": {
+    "colors": "~0.6.0-1"
+  }
+}

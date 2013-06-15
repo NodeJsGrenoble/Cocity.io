@@ -1,0 +1,19 @@
+html
+  head
+    each script in scripts
+      script(src=script)
+    link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700', rel='stylesheet', type='text/css')
+    link(href='/css/main.css', rel='stylesheet', type='text/css')
+  body
+    header.header
+      nav.header__nav
+        ul
+          li
+            a(href="#") Mes posts
+          li
+            a(href="#") Notifications
+          li
+            a(href="#") Geoloc
+      h1.header__site-name CoCity
+      a.header__button edit
+    block content

@@ -1,8 +1,3 @@
-Q = require("q")
-_ = require("underscore")
-
-remotes = {}
-
 @include = ->
 
   @on "connection": ->
@@ -23,21 +18,27 @@ remotes = {}
   @helper emit_to_room: (room, args...) ->
     @socket.broadcast.to(room).emit args...
 
-  @helper get_master: (room, except_id) ->
-    if @io.sockets.manager.rooms["/#{room}"]?.length
-      master_id = @io.sockets.manager.rooms["/#{room}"][0] 
-      if except_id is master_id
-        master_id = @io.sockets.manager.rooms["/#{room}"][1]
-    master_id 
-
   @helper get_room_users: (room, cb) ->
-    Q.all(
-      _(@io.sockets.manager.rooms["/#{room}"]).map (socket_id) =>
-        deferred = new Q.defer()
-        @io.sockets.sockets[socket_id].get "me", (err, user) ->
-          deferred.resolve(user)
-        deferred.promise
-    ).done cb
+    console.log "Num users for #{room}", @io.sockets.manager.rooms["/#{room}"]?.length
+    if @io.sockets.manager.rooms["/#{room}"]?
+      Q.all(
+        _(@io.sockets.manager.rooms["/#{room}"]).map (socket_id) =>
+          deferred = new Q.defer()
+          @io.sockets.sockets[socket_id].get "me", (err, user) ->
+            deferred.resolve(user)
+          deferred.promise
+      ).done cb
+    else 
+      cb []
+
+  @on list_rooms: ->
+    console.log "List rooms", @io.sockets.manager.rooms
+    toRet = {}
+    _(@io.sockets.manager.rooms).each (sockets, room) -> 
+      console.log "room", room, sockets
+      if room.length > 1
+        toRet[room.slice(1)] = users: num: sockets.length
+    @ack toRet
 
   @on me: (who)->
     @socket.set "me", who, =>
@@ -66,7 +67,11 @@ remotes = {}
 
         @join @data
 
-        @emit "master", @get_master(@data)
+        @broadcast_to "", "room_update",
+          room: @data
+          users: num: users.length + 1
+
+
 
   leave = ->
     console.log "leaving"#, @socket.manager
@@ -77,7 +82,11 @@ remotes = {}
           room: name
           id: @id
 
-        @broadcast_to name.slice(1), "master", @get_master(name.slice(1), @id)
+        @get_room_users name, (users) =>
+          @broadcast
+            room: name
+            users: num: users.length
+
 
   @on disconnect: leave
   @on leave: leave
