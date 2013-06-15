@@ -100,7 +100,7 @@
       }
     };
   }).controller('AppCtrl', function($scope, socket, hashchange) {
-    var add_or_update_channel, first_connection;
+    var add_or_update_channel, first_connection, update_channel_state;
 
     first_connection = true;
     $scope.channels = [];
@@ -119,6 +119,20 @@
         return $scope.channels.push(room);
       }
     };
+    update_channel_state = function(name, state) {
+      var chan, k, v, _results;
+
+      if (chan = _($scope.channels).find(function(chan) {
+        return chan.name === name;
+      })) {
+        _results = [];
+        for (k in state) {
+          v = state[k];
+          _results.push(chan[k] = v);
+        }
+        return _results;
+      }
+    };
     socket.on("connect", function() {
       var current_channel,
         _this = this;
@@ -135,7 +149,10 @@
           chan = _ref[_i];
           console.log("Joining " + chan);
           socket.emit("join", chan, function(users) {
-            return console.log("Users in " + chan, users.length);
+            console.log("Users in " + chan, users.length);
+            return update_channel_state(chan, {
+              joined: true
+            });
           });
         }
         console.log("leave", _(old_arr).difference(new_arr));
@@ -144,7 +161,10 @@
         for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
           chan = _ref1[_j];
           console.log("Leaving " + chan);
-          _results.push(socket.emit("leave", chan));
+          socket.emit("leave", chan);
+          _results.push(update_channel_state(chan, {
+            joined: false
+          }));
         }
         return _results;
       }, true);

@@ -90,6 +90,11 @@ angular.module('components', []).
       else
         $scope.channels.push room
 
+    update_channel_state = (name, state) ->
+      if chan = _($scope.channels).find((chan) -> chan.name is name)
+        for k, v of state
+          chan[k] = v
+
 
     socket.on "connect", ->
 
@@ -101,13 +106,17 @@ angular.module('components', []).
         # Chan to Join 
         for chan in _(new_arr).difference(old_arr)
           console.log "Joining #{chan}"
+
           socket.emit "join", chan , (users) ->
             console.log "Users in #{chan}", users.length
+            update_channel_state chan, joined: true
+
         console.log "leave",  _(old_arr).difference(new_arr)
         # Chan to Leave  
         for chan in _(old_arr).difference(new_arr)
           console.log "Leaving #{chan}"
           socket.emit "leave", chan
+          update_channel_state chan, joined: false
       
       , true
       

@@ -81,11 +81,9 @@
           room: name
           id: @id
 
-        @get_room_users name.slice(1), (users) =>
-          @broadcast
-            room: name
-            users: num: users.length
+        @leave name.slice(1)
 
+        @get_room_users name.slice(1), (users) =>
           @broadcast_to "", "room_update",
             name: @data
             users: users.length
