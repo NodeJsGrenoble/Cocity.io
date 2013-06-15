@@ -61,17 +61,18 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
   font-weight: normal;
   font-style: normal; }
 
-/* line 8, ../../sass/main.scss */
+/* line 26, ../../sass/main.scss */
 body {
-  font-family: "Open sans", sans-serif; }
+  font-family: "Open sans", sans-serif;
+  background: #f3f3f3; }
 
-/* line 12, ../../sass/main.scss */
+/* line 31, ../../sass/main.scss */
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
-/* line 32, ../../sass/main.scss */
+/* line 35, ../../sass/main.scss */
 .header {
   background: #242424;
   *zoom: 1;
@@ -83,19 +84,19 @@ body {
     display: table;
     clear: both; }
 
-/* line 39, ../../sass/main.scss */
+/* line 42, ../../sass/main.scss */
 .header__nav {
   position: absolute;
   left: 0px;
   top: 0px;
   line-height: 40px; }
-  /* line 45, ../../sass/main.scss */
+  /* line 48, ../../sass/main.scss */
   .header__nav.opened {
     max-height: 0px; }
-  /* line 49, ../../sass/main.scss */
+  /* line 52, ../../sass/main.scss */
   .header__nav.closed {
     display: none; }
-  /* line 53, ../../sass/main.scss */
+  /* line 56, ../../sass/main.scss */
   .header__nav a {
     display: inline-block;
     text-decoration: none;
@@ -106,13 +107,13 @@ body {
     -moz-transition: color 0.2s linear, background 0.2s linear;
     -o-transition: color 0.2s linear, background 0.2s linear;
     transition: color 0.2s linear, background 0.2s linear; }
-    /* line 61, ../../sass/main.scss */
+    /* line 64, ../../sass/main.scss */
     .header__nav a:hover {
       color: #fafafa; }
-    /* line 65, ../../sass/main.scss */
+    /* line 68, ../../sass/main.scss */
     .header__nav a.active, .header__nav a:active {
       background: black; }
-  /* line 70, ../../sass/main.scss */
+  /* line 73, ../../sass/main.scss */
   .header__nav ul {
     margin: 0;
     padding: 0;
@@ -138,23 +139,23 @@ body {
       /* line 50, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
       .header__nav ul li.last {
         padding-right: 0; }
-  /* line 74, ../../sass/main.scss */
+  /* line 77, ../../sass/main.scss */
   .header__nav.opened {
     max-height: 9999px;
     position: static;
     left: 0px; }
-    /* line 79, ../../sass/main.scss */
+    /* line 82, ../../sass/main.scss */
     .header__nav.opened ul {
       width: 100%;
       background: #242424; }
-    /* line 84, ../../sass/main.scss */
+    /* line 87, ../../sass/main.scss */
     .header__nav.opened li {
       display: block;
       float: none;
       margin: 0;
       padding: 0; }
 
-/* line 93, ../../sass/main.scss */
+/* line 96, ../../sass/main.scss */
 .header__logo {
   text-align: center;
   font-weight: 700;
@@ -162,28 +163,7 @@ body {
   font-size: 20px;
   line-height: 40px; }
 
-/* line 101, ../../sass/main.scss */
-.header__button {
-  text-decoration: none;
-  background: #2ecc71;
-  color: white;
-  position: absolute;
-  right: 0px;
-  top: 0px; }
-
-/* line 110, ../../sass/main.scss */
-.header__button {
-  float: right;
-  display: inline-block;
-  padding: 0 1.1em;
-  line-height: 40px;
-  font-size: 14px; }
-  /* line 118, ../../sass/main.scss */
-  .header__button i {
-    display: inline-block;
-    margin-right: 5px; }
-
-/* line 124, ../../sass/main.scss */
+/* line 104, ../../sass/main.scss */
 .ss-icon, #nav-toggle {
   font-family: 'SS Standard';
   font-weight: normal;
@@ -199,22 +179,22 @@ body {
   font-feature-settings: "liga", "dlig";
   -webkit-font-smoothing: antialiased; }
 
-/* line 140, ../../sass/main.scss */
+/* line 120, ../../sass/main.scss */
 .tab-bar {
   *zoom: 1;
   background: white;
-  border-bottom: 1px solid #ebebeb; }
+  border-bottom: 1px solid #dbdbdb; }
   /* line 38, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/utilities/general/_clearfix.scss */
   .tab-bar:after {
     content: "";
     display: table;
     clear: both; }
-  /* line 145, ../../sass/main.scss */
+  /* line 125, ../../sass/main.scss */
   .tab-bar .tab-bar__tab {
     float: left;
     width: 33.33333%;
     border-right: 1px solid #ebebeb; }
-  /* line 151, ../../sass/main.scss */
+  /* line 131, ../../sass/main.scss */
   .tab-bar .tab-bar__link {
     text-transform: uppercase;
     font-size: 12px;
@@ -224,19 +204,19 @@ body {
     text-align: center;
     line-height: 40px;
     text-decoration: none; }
-    /* line 161, ../../sass/main.scss */
+    /* line 141, ../../sass/main.scss */
     .tab-bar .tab-bar__link.is-active {
       background: whitesmoke;
       color: black; }
 
-/* line 168, ../../sass/main.scss */
+/* line 148, ../../sass/main.scss */
 .tab-pane {
   display: none; }
-  /* line 171, ../../sass/main.scss */
+  /* line 151, ../../sass/main.scss */
   .tab-pane.is-active {
     display: block; }
 
-/* line 176, ../../sass/main.scss */
+/* line 156, ../../sass/main.scss */
 #nav-toggle {
   position: absolute;
   line-height: 40px;
@@ -245,37 +225,153 @@ body {
   padding: 0 1em; }
 
 @media screen and (min-width: 40em) {
-  /* line 186, ../../sass/main.scss */
+  /* line 166, ../../sass/main.scss */
   .header__nav {
     position: relative; }
 
-  /* line 189, ../../sass/main.scss */
+  /* line 169, ../../sass/main.scss */
   .header__nav.closed {
     max-height: none; }
 
-  /* line 192, ../../sass/main.scss */
+  /* line 172, ../../sass/main.scss */
   #nav-toggle {
     display: none; } }
-/* line 197, ../../sass/main.scss */
-.channels {
+/* line 177, ../../sass/main.scss */
+.channels, .chat {
   width: 90%;
   margin: 20px auto; }
 
-/* line 206, ../../sass/main.scss */
+/* line 190, ../../sass/main.scss */
 .tab-pane__title {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 1.1em; }
 
-/* line 212, ../../sass/main.scss */
+/* line 196, ../../sass/main.scss */
 .chan {
   float: left;
-  margin-right: 5px; }
-  /* line 215, ../../sass/main.scss */
+  margin-right: 1em; }
+  /* line 199, ../../sass/main.scss */
   .chan a {
     text-decoration: none;
     color: #212121;
     display: inline-block;
-    padding: .6em 1em;
-    background: #EEE;
+    background: #F2F2F2;
     border: 1px solid #DDD; }
+  /* line 207, ../../sass/main.scss */
+  .chan.is-active a {
+    color: white; }
+
+/* line 212, ../../sass/main.scss */
+.chan__name, .chan__nb-users {
+  display: inline-block;
+  padding: .5em .4em; }
+
+/* line 217, ../../sass/main.scss */
+.chan__name {
+  font-weight: 600;
+  border-right: 1px solid #DDD;
+  background: #FFF; }
+  /* line 222, ../../sass/main.scss */
+  .chan.is-active .chan__name {
+    background: #2ecc71; }
+
+/* line 227, ../../sass/main.scss */
+.chan__nb-users {
+  color: #888; }
+  /* line 230, ../../sass/main.scss */
+  .chan__nb-users i {
+    display: inline-block;
+    margin-right: .4em;
+    position: relative;
+    top: 1px; }
+
+/* line 238, ../../sass/main.scss */
+.message {
+  font-size: 14px;
+  background: #FFF;
+  padding: .8em 1em;
+  margin-bottom: 1em;
+  border: 2px solid #DDD;
+  overflow: hidden; }
+
+/* line 247, ../../sass/main.scss */
+.message__user {
+  display: block;
+  font-weight: 600;
+  margin-bottom: .5em; }
+
+/* line 253, ../../sass/main.scss */
+.message__content {
+  color: #666; }
+
+/* line 257, ../../sass/main.scss */
+.message__hash {
+  display: inline-block;
+  color: #212121;
+  padding: .3em .6em;
+  background: #FAFAFA;
+  border: 1px solid #EEE;
+  margin-left: .4em;
+  text-decoration: none; }
+  /* line 266, ../../sass/main.scss */
+  .message__hash:hover {
+    background: #f2f2f2;
+    color: #3b3b3b; }
+
+/* line 274, ../../sass/main.scss */
+.post {
+  height: 8%;
+  position: fixed;
+  bottom: 0px;
+  background: white;
+  border-top: 1px solid #f2f2f2;
+  width: 100%;
+  overflow: hidden; }
+
+/* line 284, ../../sass/main.scss */
+.post__message {
+  border: none;
+  height: 100%;
+  margin: 10px 1%; }
+  /* line 289, ../../sass/main.scss */
+  .post__message textarea {
+    max-width: 100%;
+    width: auto;
+    border: 1px dashed #CCC;
+    font-family: "Open sans", sans-serif;
+    font-size: 14px; }
+  /* line 297, ../../sass/main.scss */
+  .post__message:focus {
+    outline: none;
+    border: 1px solid #CCC; }
+
+/* line 303, ../../sass/main.scss */
+.post__submit {
+  text-decoration: none;
+  background: #2ecc71;
+  color: white; }
+
+/* line 309, ../../sass/main.scss */
+.post__submit {
+  float: right;
+  width: 100px;
+  margin-left: 5px;
+  height: 100%;
+  display: block;
+  font-size: 18px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer; }
+  /* line 321, ../../sass/main.scss */
+  .post__submit i {
+    display: inline-block;
+    margin-right: 8px;
+    position: relative;
+    top: 2px; }
+
+/* line 332, ../../sass/main.scss */
+#map {
+  height: 100%;
+  width: 100%;
+  position: static; }

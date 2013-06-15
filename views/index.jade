@@ -4,16 +4,32 @@ block content
   .app(ng-controller="AppCtrl")
     tabs
       pane(title="Chat")
-        p Je suis le chat
+        .chat
+          h2.tab-pane__title Bienvenue sur CoCity
+          ul(ng-repeat="message in messages")
+            li.message
+              span.message__user
+                {{message.author}}
+              p.message__content
+                {{message.content}}
+                a(href="#", class="message__hash", ng-repeat='hash in message.hashtags')
+                  # {{ hash }}
+        .post
+          button.post__submit
+            i.ss-icon send
+            span Send
+          .post__message
+            textarea
       pane(title="Maps")
-        p Je suis la map
+        .map
+          #map
       pane(title="Channels")
         .channels
           h2.tab-pane__title Bienvenue sur la liste des channels
-          ul(ng-repeat="chan in channels")
-            li.chan
+          ul
+            li.chan(ng-repeat="chan in channels", ng-class="{'is-active': chan.joined == true}")
               a(href="#")
-                span.chan__name {{chan.name}}
+                span.chan__name # {{chan.name}}
                 span.chan__nb-users
                   i.ss-icon users
                   {{chan.users}}

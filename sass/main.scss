@@ -5,21 +5,15 @@
 
 @include font-face("SS Standard", font-files("ss-standard.woff", "ss-standard.ttf", "ss-standard.svg"), "ss-standard.eot", normal, normal);
 
-body{
-  font-family: "Open sans", sans-serif;
-}
-
-*{
-  @include box-sizing(border-box);
-}
+$body-bg-color: #F3F3F3;
 
 $header-bg-color: #242424;
 $header-link-color: #989898;
 $header-link-color--hover: #FAFAFA;
 $header-link-bg--active: #000;
 $header-logo-color: #FAFAFA;
-$header-button-bg: #2ecc71;
-$header-button-color: #FFF;
+$primary-bg-color: #2ecc71;
+$primary-text-color: #FFF;
 $header-height: 40px;
 
 $tab-bar-bg: #FFF;
@@ -28,6 +22,15 @@ $tab-bar-link-bg--active: darken($tab-bar-bg, 4%);
 $tab-bar-link-color--active: #000;
 
 $text-color: #212121;
+
+body{
+  font-family: "Open sans", sans-serif;
+  background: $body-bg-color;
+}
+
+*{
+  @include box-sizing(border-box);
+}
 
 .header{
   background: $header-bg-color;
@@ -98,29 +101,6 @@ $text-color: #212121;
   line-height: $header-height;
 }
 
-%button-squared{
-  text-decoration: none;
-  background: $header-button-bg;
-  color: $header-button-color;
-  position: absolute;
-  right: 0px;
-  top: 0px;
-}
-
-.header__button{
-  float: right;
-  display: inline-block;
-  @extend %button-squared;
-  padding: 0 1.1em;
-  line-height: $header-height;
-  font-size: 14px;
-
-  i{
-    display: inline-block;
-    margin-right: 5px;
-  }
-}
-
 .ss-icon{
   font-family: 'SS Standard';
   font-weight: normal;
@@ -140,7 +120,7 @@ $text-color: #212121;
 .tab-bar{
   @include pie-clearfix;
   background: $tab-bar-bg;
-  border-bottom: 1px solid darken($tab-bar-bg, 8%);
+  border-bottom: 1px solid darken($tab-bar-bg, 14%);
 
   .tab-bar__tab{
     float: left;
@@ -203,6 +183,10 @@ $text-color: #212121;
   @extend %tab-pane;
 }
 
+.chat{
+  @extend %tab-pane;
+}
+
 .tab-pane__title{
   font-size: 24px;
   font-weight: 600;
@@ -211,13 +195,142 @@ $text-color: #212121;
 
 .chan{
   float: left;
-  margin-right: 5px;
+  margin-right: 1em;
   a{
     text-decoration: none;
     color: $text-color;
     display: inline-block;
-    padding: .6em 1em;
-    background: #EEE;
+    background: #F2F2F2;
     border: 1px solid #DDD;
   }
+
+  &.is-active a{
+    color: $primary-text-color;
+  }
+}
+
+.chan__name, .chan__nb-users{
+  display: inline-block;
+  padding: .5em .4em;
+}
+
+.chan__name{
+  font-weight: 600;
+  border-right: 1px solid #DDD;
+  background: #FFF;
+
+  .chan.is-active &{
+    background: $primary-bg-color;
+  }
+}
+
+.chan__nb-users{
+  color: #888;
+
+  i{
+    display: inline-block;
+    margin-right: .4em;
+    position: relative;
+    top: 1px;
+  }
+}
+
+.message{
+  font-size: 14px;
+  background: #FFF;
+  padding: .8em 1em;
+  margin-bottom: 1em;
+  border: 2px solid #DDD;
+  overflow: hidden;
+}
+
+.message__user{
+  display: block;
+  font-weight: 600;
+  margin-bottom: .5em;
+}
+
+.message__content{
+  color: #666;
+}
+
+.message__hash{
+  display: inline-block;
+  color: $text-color;
+  padding: .3em .6em;
+  background: #FAFAFA;
+  border: 1px solid #EEE;
+  margin-left: .4em;
+  text-decoration: none;
+
+  &:hover{
+    background: darken(#FAFAFA, 3%);
+    color: lighten($text-color, 10%);
+  }
+}
+
+$post-bg-color: #FFF;
+
+.post{
+  height: 8%;
+  position: fixed;
+  bottom: 0px;
+  background: $post-bg-color;
+  border-top: 1px solid darken($post-bg-color, 5%);
+  width: 100%;
+  overflow: hidden;
+}
+
+.post__message{
+  border: none;
+  height: 100%;
+  margin: 10px 1%;
+
+  textarea{
+    max-width: 100%;
+    width: auto;
+    border: 1px dashed #CCC;
+    font-family: "Open sans", sans-serif;
+    font-size: 14px;
+  }
+
+  &:focus{
+    outline: none;
+    border: 1px solid #CCC;
+  }
+}
+
+%button-squared{
+  text-decoration: none;
+  background: $primary-bg-color;
+  color: $primary-text-color;
+}
+
+.post__submit{
+  float: right;
+  width: 100px;
+  margin-left: 5px;
+  height: 100%;
+  display: block;
+  @extend %button-squared;
+  font-size: 18px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+
+  i{
+    display: inline-block;
+    margin-right: 8px;
+    position: relative;
+    top: 2px;
+  }
+}
+
+//  =======
+//  = Map =
+//  =======
+#map{
+  height: 100%;
+  width: 100%;
+  position: static;
 }

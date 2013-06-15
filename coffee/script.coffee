@@ -49,11 +49,47 @@ angular.module('components', []).
     $scope.channels = [
       {
         name: 'p0rn',
-        users: 34
+        users: 34,
+        joined: true
       },
       {
         name: 'redbull',
         users: 54
       }
     ]
+
+    $scope.messages = [
+      {
+        author: 'Aristote',
+        content: 'We are what we repeatedly do. Excellence then, is not an act, but a habit.',
+        hashtags: [
+          'quotes',
+          'fames'
+        ]
+      },
+      {
+        author: 'unknown',
+        content: 'The people you spend time with will shape and define you. Choose wisely.'
+      }
+    ]
   )
+
+initialize = () ->
+  mapOptions = {
+    center: new google.maps.LatLng(40.705578, -73.978004)
+    zoom: 8
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+  map = new google.maps.Map( document.getElementById("map"), mapOptions)
+
+  centerMap = (position) ->
+    lat = position.coords.latitude
+    lng = position.coords.longitude
+
+    map.setCenter(new google.maps.LatLng(lat,lng));
+
+  # Center if geoloc
+  if navigator.geolocation
+    navigator.geolocation.getCurrentPosition(centerMap);
+
+google.maps.event.addDomListener(window, 'load', initialize);

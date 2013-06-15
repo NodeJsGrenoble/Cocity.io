@@ -1,5 +1,7 @@
 html(ng-app="components")
   head
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width")
     each script in scripts
       script(src=script)
     link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700', rel='stylesheet', type='text/css')
@@ -15,7 +17,4 @@ html(ng-app="components")
           li
             a(href="#") Geoloc
       h1.header__logo CoCity
-      a.header__button
-        i.ss-icon edit
-        span Post
     block content
