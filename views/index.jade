@@ -1,14 +1,20 @@
 extends layout
 
 block content
-  tabs
-    pane(title="Chat")
-    pane(title="Maps")
-    pane(title="Channels")
-  //- ul.tab-bar
-  //-   li.tab-bar__tab
-  //-     a.tab-bar__link.is-active(href="#") Chat
-  //-   li.tab-bar__tab
-  //-     a.tab-bar__link(href="#") Maps
-  //-   li.tab-bar__tab
-  //-     a.tab-bar__link(href="#") Channels
+  .app(ng-controller="AppCtrl")
+    tabs
+      pane(title="Chat")
+        p Je suis le chat
+      pane(title="Maps")
+        p Je suis la map
+      pane(title="Channels")
+        .channels
+          h2.tab-pane__title Bienvenue sur la liste des channels
+          ul(ng-repeat="chan in channels")
+            li.chan
+              a(href="#")
+                span.chan__name {{chan.name}}
+                span.chan__nb-users
+                  i.ss-icon users
+                  {{chan.users}}
+

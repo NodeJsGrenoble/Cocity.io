@@ -45,9 +45,19 @@
       link: function(scope, element, attrs, tabsCtrl) {
         return tabsCtrl.addPane(scope);
       },
-      template: '<div class="tab-pane" ng-class="{active: selected}" ng-transclude>\n</div>',
+      template: '<div class="tab-pane" ng-class="{\'is-active\': selected}" ng-transclude>\n</div>',
       replace: true
     };
+  }).controller('AppCtrl', function($scope) {
+    return $scope.channels = [
+      {
+        name: 'p0rn',
+        users: 34
+      }, {
+        name: 'redbull',
+        users: 54
+      }
+    ];
   });
 
 }).call(this);

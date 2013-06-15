@@ -71,7 +71,7 @@ body {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
-/* line 30, ../../sass/main.scss */
+/* line 32, ../../sass/main.scss */
 .header {
   background: #242424;
   *zoom: 1;
@@ -83,19 +83,19 @@ body {
     display: table;
     clear: both; }
 
-/* line 37, ../../sass/main.scss */
+/* line 39, ../../sass/main.scss */
 .header__nav {
   position: absolute;
   left: 0px;
   top: 0px;
   line-height: 40px; }
-  /* line 43, ../../sass/main.scss */
+  /* line 45, ../../sass/main.scss */
   .header__nav.opened {
     max-height: 0px; }
-  /* line 47, ../../sass/main.scss */
+  /* line 49, ../../sass/main.scss */
   .header__nav.closed {
     display: none; }
-  /* line 51, ../../sass/main.scss */
+  /* line 53, ../../sass/main.scss */
   .header__nav a {
     display: inline-block;
     text-decoration: none;
@@ -106,13 +106,13 @@ body {
     -moz-transition: color 0.2s linear, background 0.2s linear;
     -o-transition: color 0.2s linear, background 0.2s linear;
     transition: color 0.2s linear, background 0.2s linear; }
-    /* line 59, ../../sass/main.scss */
+    /* line 61, ../../sass/main.scss */
     .header__nav a:hover {
       color: #fafafa; }
-    /* line 63, ../../sass/main.scss */
+    /* line 65, ../../sass/main.scss */
     .header__nav a.active, .header__nav a:active {
       background: black; }
-  /* line 68, ../../sass/main.scss */
+  /* line 70, ../../sass/main.scss */
   .header__nav ul {
     margin: 0;
     padding: 0;
@@ -138,23 +138,23 @@ body {
       /* line 50, ../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
       .header__nav ul li.last {
         padding-right: 0; }
-  /* line 72, ../../sass/main.scss */
+  /* line 74, ../../sass/main.scss */
   .header__nav.opened {
     max-height: 9999px;
     position: static;
     left: 0px; }
-    /* line 77, ../../sass/main.scss */
+    /* line 79, ../../sass/main.scss */
     .header__nav.opened ul {
       width: 100%;
       background: #242424; }
-    /* line 82, ../../sass/main.scss */
+    /* line 84, ../../sass/main.scss */
     .header__nav.opened li {
       display: block;
       float: none;
       margin: 0;
       padding: 0; }
 
-/* line 91, ../../sass/main.scss */
+/* line 93, ../../sass/main.scss */
 .header__logo {
   text-align: center;
   font-weight: 700;
@@ -162,7 +162,7 @@ body {
   font-size: 20px;
   line-height: 40px; }
 
-/* line 99, ../../sass/main.scss */
+/* line 101, ../../sass/main.scss */
 .header__button {
   text-decoration: none;
   background: #2ecc71;
@@ -171,19 +171,19 @@ body {
   right: 0px;
   top: 0px; }
 
-/* line 108, ../../sass/main.scss */
+/* line 110, ../../sass/main.scss */
 .header__button {
   float: right;
   display: inline-block;
   padding: 0 1.1em;
   line-height: 40px;
   font-size: 14px; }
-  /* line 116, ../../sass/main.scss */
+  /* line 118, ../../sass/main.scss */
   .header__button i {
     display: inline-block;
     margin-right: 5px; }
 
-/* line 122, ../../sass/main.scss */
+/* line 124, ../../sass/main.scss */
 .ss-icon, #nav-toggle {
   font-family: 'SS Standard';
   font-weight: normal;
@@ -199,7 +199,7 @@ body {
   font-feature-settings: "liga", "dlig";
   -webkit-font-smoothing: antialiased; }
 
-/* line 138, ../../sass/main.scss */
+/* line 140, ../../sass/main.scss */
 .tab-bar {
   *zoom: 1;
   background: white;
@@ -209,12 +209,12 @@ body {
     content: "";
     display: table;
     clear: both; }
-  /* line 143, ../../sass/main.scss */
+  /* line 145, ../../sass/main.scss */
   .tab-bar .tab-bar__tab {
     float: left;
     width: 33.33333%;
     border-right: 1px solid #ebebeb; }
-  /* line 149, ../../sass/main.scss */
+  /* line 151, ../../sass/main.scss */
   .tab-bar .tab-bar__link {
     text-transform: uppercase;
     font-size: 12px;
@@ -224,12 +224,19 @@ body {
     text-align: center;
     line-height: 40px;
     text-decoration: none; }
-    /* line 159, ../../sass/main.scss */
+    /* line 161, ../../sass/main.scss */
     .tab-bar .tab-bar__link.is-active {
       background: whitesmoke;
       color: black; }
 
-/* line 166, ../../sass/main.scss */
+/* line 168, ../../sass/main.scss */
+.tab-pane {
+  display: none; }
+  /* line 171, ../../sass/main.scss */
+  .tab-pane.is-active {
+    display: block; }
+
+/* line 176, ../../sass/main.scss */
 #nav-toggle {
   position: absolute;
   line-height: 40px;
@@ -238,14 +245,37 @@ body {
   padding: 0 1em; }
 
 @media screen and (min-width: 40em) {
-  /* line 176, ../../sass/main.scss */
+  /* line 186, ../../sass/main.scss */
   .header__nav {
     position: relative; }
 
-  /* line 179, ../../sass/main.scss */
+  /* line 189, ../../sass/main.scss */
   .header__nav.closed {
     max-height: none; }
 
-  /* line 182, ../../sass/main.scss */
+  /* line 192, ../../sass/main.scss */
   #nav-toggle {
     display: none; } }
+/* line 197, ../../sass/main.scss */
+.channels {
+  width: 90%;
+  margin: 20px auto; }
+
+/* line 206, ../../sass/main.scss */
+.tab-pane__title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 1.1em; }
+
+/* line 212, ../../sass/main.scss */
+.chan {
+  float: left;
+  margin-right: 5px; }
+  /* line 215, ../../sass/main.scss */
+  .chan a {
+    text-decoration: none;
+    color: #212121;
+    display: inline-block;
+    padding: .6em 1em;
+    background: #EEE;
+    border: 1px solid #DDD; }
