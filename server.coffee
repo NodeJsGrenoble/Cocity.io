@@ -10,7 +10,7 @@ require("zappajs") 4500, ->
           "/zappa/Zappa-simple.js",
           "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js",
           "/index.js",
-          # "/js/responsive-nav.min.js",
+          "/js/responsive-nav.min.js",
           "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js",
           "/js/script.js"
         ]

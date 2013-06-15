@@ -1,9 +1,16 @@
 extends layout
 
 block content
-  h1 CoCity
-    input#txt(type="text")
-    #room
+  ul.tab-bar
+    li.tab-bar__tab
+      a.tab-bar__link.is-active(href="#") Chat
+    li.tab-bar__tab
+      a.tab-bar__link(href="#") Maps
+    li.tab-bar__tab
+      a.tab-bar__link(href="#") Channels
+  //- h1 CoCity
+  //-   input#txt(type="text")
+  //-   #room
   ul.users(ng-controller="UsersCtrl")
     li(ng-repeat="user in users")
       span {{user}}
