@@ -22,7 +22,7 @@ block content
             textarea(ng-model="message.content")
       pane(title="Maps")
         .map
-          #map
+          google-map(center="center", draggable="true", zoom="zoom", markers="markers")
       pane(title="Channels")
         .channels
           h2.tab-pane__title Bienvenue sur la liste des channels

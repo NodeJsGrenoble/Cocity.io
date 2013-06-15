@@ -18,6 +18,7 @@ require("zappajs") 4500, ->
           "/index.js"
           "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
           "https://maps.googleapis.com/maps/api/js?key=AIzaSyALgyOJvkCbURI1QyHP_ahk4M5GfSDvNsg&sensor=false"
+          "/js/angular-google-maps.js"
           "/js/script.js"
         ]
 

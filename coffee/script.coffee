@@ -1,10 +1,5 @@
-$ ->
-  navigation = responsiveNav("#nav", {
-    label: "list"
-    openPos: "static"
-  })
 
-angular.module('components', []).
+angular.module('cocity', ["google-maps"]).
   directive('tabs', ->
     restrict: 'E'
     transclude: true
@@ -74,6 +69,7 @@ angular.module('components', []).
           ack?.apply socket, args
   ).
   controller('AppCtrl', ($scope, socket, hashchange) ->
+    window.scope = $scope
 
     first_connection = true
 
@@ -146,24 +142,43 @@ angular.module('components', []).
       console.log "room_update", room
       add_or_update_channel room
 
+    # Google Maps
+    $scope.center = {
+      latitude: 40.705578
+      longitude: -73.978004
+    }
+
+    if navigator.geolocation
+      navigator.geolocation.getCurrentPosition((position) ->
+        $scope.$apply ->
+          $scope.center = {
+            latitude: position.coords.latitude
+            longitude: position.coords.longitude
+          }
+      )
+
+    $scope.markers = []
+
+    $scope.zoom = 6
+
   )
 
-initialize = () ->
-  mapOptions = {
-    center: new google.maps.LatLng(40.705578, -73.978004)
-    zoom: 8
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  }
-  map = new google.maps.Map( document.getElementById("map"), mapOptions)
+# initialize = () ->
+#   mapOptions = {
+#     center: new google.maps.LatLng(40.705578, -73.978004)
+#     zoom: 8
+#     mapTypeId: google.maps.MapTypeId.ROADMAP
+#   }
+#   map = new google.maps.Map( document.getElementById("map"), mapOptions)
 
-  centerMap = (position) ->
-    lat = position.coords.latitude
-    lng = position.coords.longitude
+#   centerMap = (position) ->
+#     lat = position.coords.latitude
+#     lng = position.coords.longitude
 
-    map.setCenter(new google.maps.LatLng(lat,lng))
+#     map.setCenter(new google.maps.LatLng(lat,lng))
 
-  # Center if geoloc
-  if navigator.geolocation
-    navigator.geolocation.getCurrentPosition(centerMap)
+#   # Center if geoloc
+#   if navigator.geolocation
+#     navigator.geolocation.getCurrentPosition(centerMap)
 
-google.maps.event.addDomListener(window, 'load', initialize)
+# google.maps.event.addDomListener(window, 'load', initialize)
