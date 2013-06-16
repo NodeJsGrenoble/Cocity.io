@@ -20,6 +20,7 @@ block content
             span Send
           .post__message
             textarea(ng-model="message.content")
+            img(src="/img/add-poi.svg", class="svg-icon", width="28")
       pane(title="Maps")
         .map
           google-map(center="center", draggable="true", zoom="zoom", markers="markers")

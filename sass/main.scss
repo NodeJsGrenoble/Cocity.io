@@ -236,7 +236,7 @@ $post-bg-color: #FFF;
 }
 
 .post__message{
-  border: none;
+  position: relative;
   width: 90%;
 
   @include mq-max-w(890px){
@@ -255,6 +255,19 @@ $post-bg-color: #FFF;
     &:focus{
       outline: none;
       box-shadow: inset 0 1px 1px rgba(0,0,0,.2);
+    }
+  }
+
+  .svg-icon{
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    margin-top: -12px;
+    cursor: pointer;
+    opacity: .6;
+
+    &:hover{
+      opacity: 1;
     }
   }
 }
