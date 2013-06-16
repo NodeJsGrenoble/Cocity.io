@@ -86,6 +86,16 @@
       template: '<div class="tab-pane" ng-class="{\'is-active\': selected}" ng-transclude>\n</div>',
       replace: true
     };
+  }).directive('onFocus', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        console.log("focus on", element);
+        return element.bind('focus', function() {
+          return scope.$eval(attrs.onFocus);
+        });
+      }
+    };
   }).factory("hashchange", function($rootScope) {
     var last_hash;
 
@@ -240,6 +250,13 @@
       console.log("toggleChannel", arguments, event);
       return event.preventDefault();
     };
+    $scope.inputFocus = function() {
+      return $scope.$apply(function() {
+        return $scope.message.content = _($scope.current_channels).map(function(chan) {
+          return "#" + chan;
+        }).join(" ") + " ";
+      });
+    };
     extractHashtags = function(text) {
       return _(text.match(/#(\w+)/g)).map(function(ht) {
         return ht.slice(1);
@@ -252,8 +269,7 @@
       }
       if (!$scope.me.username) {
         setTimeout(function() {
-          $("#pseudoprompt").focus();
-          return console.log("Setting focus on", $("#pseudoprompt").first());
+          return $("#pseudoprompt").focus();
         });
         return $scope.usernamePrompt = true;
       }

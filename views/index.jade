@@ -11,10 +11,10 @@ block content
                 span.chan__name # {{chan.name}}
                 span.chan__nb-users
                   i.ss-icon users
-                  {{chan.users}}
-                span.chan__nb-pois(ng-if="chan.pois > 0")
+                  {{chan.stats.users}}
+                span.chan__nb-pois(ng-if="chan.stats.pois > 0")
                   i.ss-icon pin
-                  {{chan.pois}}
+                  {{chan.stats.pois}}
           ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'-post_date'")
             li.message
               span.message__user
@@ -35,7 +35,7 @@ block content
             i.ss-icon send
             span Send
           .post__message
-            textarea(ng-model="message.content", placeholder="Enter your message here", enter-submit="sendMessage()")
+            textarea(ng-model="message.content", on-focus="inputFocus()",placeholder="Enter your message here", enter-submit="sendMessage()")
             span.post__poi(ng-show='poiMessage.name.length > 0')
               i.ss-icon(ng-click="poiMessage.name = ''") delete
               {{poiMessage.name}}

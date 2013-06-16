@@ -1,7 +1,9 @@
 uuid = require "uuid"
 util = require "util"
+fs = require "fs"
 
-rooms_messages = require "../data/mock.coffee"
+rooms_messages = JSON.parse(fs.readFileSync "./data/rooms.json")
+#rooms_messages = require "../data/mock.coffee"
 
 @include = ->
 
@@ -36,6 +38,14 @@ rooms_messages = require "../data/mock.coffee"
     else
       cb []
 
+  @helper chan_infos: (channel) ->
+    name: channel
+    stats:
+      users: @io.sockets.manager.rooms["/#{channel}"]?.length ? 0
+      messages: rooms_messages[channel] ? []
+      pois: _(rooms_messages[channel]).filter((msg) -> msg.poi?.name).length
+
+
   @on list_rooms: ->
     channels = _(
       _(@io.sockets.manager.rooms).chain().keys().map((route) -> route.slice 1).value().concat \
@@ -44,11 +54,7 @@ rooms_messages = require "../data/mock.coffee"
     console.log "channels", _(@io.sockets.manager.rooms).chain().keys().map((route) -> route.slice 1).value().concat \
         _(rooms_messages).keys()
 
-    @ack? chans = _(channels).map (channel) =>
-      name: channel
-      users: @io.sockets.manager.rooms["/#{channel}"]?.length ? 0
-      messages: rooms_messages[channel] ? []
-      pois: 5
+    @ack? chans = _(channels).map @chan_infos
     console.log "List rooms", util.inspect(@io.sockets.manager.rooms, colors: on)
     console.log "List chans", util.inspect(chans, colors: on)
 
@@ -68,7 +74,12 @@ rooms_messages = require "../data/mock.coffee"
         post_data: (new Date()).getTime()
       console.log "Sending Post to #{hashtag}"
       if hashtag
-        (rooms_messages[hashtag] or= []).push msg
+        unless rooms_messages[hashtag]
+          rooms_messages[hashtag] = []
+
+        rooms_messages[hashtag].push msg
+        @broadcast_to "", "room_update", @chan_infos hashtag
+
       @broadcast_to hashtag, "post", msg
 
 
@@ -93,15 +104,13 @@ rooms_messages = require "../data/mock.coffee"
         console.log "Messages for room #{@data}", rooms_messages[@data]
         @ack?(
           name: @data
-          users: users.length
+          users: users
           messages: rooms_messages[@data]
         )
 
         @join @data
 
-        @broadcast_to "", "room_update",
-          name: @data
-          users: users.length + 1
+        @broadcast_to "", "room_update", @chan_infos @data
 
         console.log util.inspect(@io.sockets.manager.rooms, colors: on)
 
@@ -119,9 +128,7 @@ rooms_messages = require "../data/mock.coffee"
         @leave name.slice(1)
 
         @get_room_users name.slice(1), (users) =>
-          @broadcast_to "", "room_update",
-            name: @data
-            users: users.length
+          @broadcast_to "", "room_update", @chan_infos @data
 
           console.log util.inspect(@io.sockets.manager.rooms, colors: on)
 
@@ -141,3 +148,7 @@ rooms_messages = require "../data/mock.coffee"
   # Chat
   @on chat: ->
      @broadcast_to @data.channel, "chat", @data
+
+process.on "exit", ->
+  console.log "Exited"
+  fs.writeFileSync "./data/rooms.json", JSON.stringify(rooms_messages, null, 4)

@@ -467,7 +467,6 @@
         else {
           scope.$watch("refresh()", function (newValue, oldValue) {
             if (newValue && !oldValue) {
-              console.log("MAPREFRESHING");
               _m.draw();
               markerWatcher();
             }

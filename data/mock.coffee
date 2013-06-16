@@ -2,7 +2,7 @@ module.exports =
   cowork: [
     {
       id: "e9577827-5ad5-4484-9eeb-9c3d76f6029e"
-      post_data: 1371347122131
+      post_date: 1371347122131
       author: "Evangenieur"
       content: "Col-inn http://www.col-inn.net/"
       poi: 
@@ -12,7 +12,7 @@ module.exports =
     }
     {
       id: "e9577827-5ad5-4484-9eeb-9c3d76f6028e"
-      post_data: 1371347132131
+      post_date: 1371347132131
       author: "Thierry"
       content: "Cowork In Grenoble, Espace de Co-working : http://co-work.fr"
       poi:
@@ -26,7 +26,7 @@ module.exports =
   bar: [
     {
       id: "e9577827-5ad5-4484-9eeb-9c3d76f6027e"
-      post_data: 1371347122131
+      post_date: 1371347122131
       author: "Evangenieur"
       content: "Vivement demain pour #1ptiteMousse"
       poi:
