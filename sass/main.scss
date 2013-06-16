@@ -28,6 +28,10 @@ body{
   background: $body-bg-color;
 }
 
+a{
+  -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
+}
+
 *{
   @include box-sizing(border-box);
 }
@@ -69,6 +73,10 @@ body{
   background: $tab-bar-bg;
   border-bottom: 1px solid darken($tab-bar-bg, 14%);
 
+  @include mq-min-w(1280px){
+    display: none;
+  }
+
   .tab-bar__tab{
     float: left;
     border-right: 1px solid darken($tab-bar-bg, 8%);
@@ -101,6 +109,10 @@ body{
 
 .tab-pane{
   display: none;
+
+  @include mq-min-w(1280px){
+    display: block;
+  }
 
   &.is-active{
     display: block;
@@ -210,11 +222,13 @@ body{
 
 .message{
   font-size: 14px;
+  line-height: 1.4;
   background: #FFF;
   padding: .8em 1em;
   margin-bottom: 1em;
   border: 1px solid #DDD;
   overflow: hidden;
+  position: relative;
 }
 
 .message__user{
@@ -226,9 +240,24 @@ body{
 
 .message__content{
   color: #666;
+  position: relative;
 
   a{
     color: $primary-bg-color;
+  }
+}
+
+.poi-attach{
+  position: absolute;
+  font-size: 12px;
+  right: 10px;
+  top: 5px;
+  display: inline-block;
+  color: #AAA;
+
+  i{
+    display: inline-block;
+    margin-right: 4px;
   }
 }
 
@@ -260,6 +289,7 @@ $poi-search-bg: #2ecc71;
   background: $post-bg-color;
   box-shadow: 0 -1px 2px rgba(0,0,0,.1);
   width: 100%;
+  z-index: 1;
 }
 
 .poi-search{
@@ -468,6 +498,20 @@ $poi-search-bg: #2ecc71;
   width: 100%;
 }
 
+.chat{
+  @include mq-min-w(1280px){
+    width: 50%;
+    padding: 0 20px;
+    float: left;
+  }
+}
+
+.map{
+  @include mq-min-w(1280px){
+    width: 50%;
+    float: left;
+  }
+}
 
 //  =========
 //  = Modal =
@@ -478,9 +522,15 @@ $poi-search-bg: #2ecc71;
   margin: 0 auto;
   background: #FFF;
   padding: 20px;
-  border: 2px solid #DDD;
+  border: 1px solid #DDD;
   text-align: center;
   z-index: 10;
+  position: fixed;
+  top: 50%;
+  margin-top: -83px;
+  left: 50%;
+  margin-left: -200px;
+  box-shadow: 0 0 3px rgba(0,0,0,.2);
 
   @include mq-max-w(500px){
     height: 100%;
@@ -490,6 +540,7 @@ $poi-search-bg: #2ecc71;
     bottom: 5px;
     left: 1%;
     right: 1%;
+    margin: 0px;
   }
 }
 
@@ -506,7 +557,7 @@ $poi-search-bg: #2ecc71;
 
 .modal__input{
   width: 80%;
-  border: 1px solid #EEE;
+  border: 1px solid #DDD;
 
   &:focus{
     outline: none;

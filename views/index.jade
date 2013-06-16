@@ -24,6 +24,10 @@ block content
                 a(href="#", class="message__hash",
                   ng-repeat='hash in message.hashtags', ng-click="toggleChannel(hash, $event)")
                     # {{ hash }}
+                .rich-content(ng-bind-html-unsafe="message.rich")
+                span.poi-attach
+                  i.ss-icon pin
+                  {{message.poi.name}}
         form.post(ng-submit="sendMessage()")
           .poi-search(ng-class="{'is-hidden': !poiShow}")
             i.ss-icon search

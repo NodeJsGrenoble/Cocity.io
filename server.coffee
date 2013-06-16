@@ -21,6 +21,7 @@ require("zappajs") 4500, ->
           "https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"
           "https://maps.googleapis.com/maps/api/js?sensor=false"
           "/js/angular-google-maps.js"
+          "/js/fastclick.js"
           "/js/script.js"
         ]
 
