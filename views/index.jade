@@ -25,7 +25,7 @@ block content
                   ng-repeat='hash in message.hashtags', ng-click="toggleChannel(hash, $event)")
                     # {{ hash }}
                 .rich-content(ng-bind-html-unsafe="message.rich")
-                span.poi-attach
+                span.poi-attach(ng-if="message.poi.name")
                   i.ss-icon pin
                   {{message.poi.name}}
         form.post(ng-submit="sendMessage()")
