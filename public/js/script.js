@@ -147,7 +147,7 @@
       }
     };
   }).controller('AppCtrl', function($scope, $filter, $http, socket, hashchange) {
-    var add_or_not_message, add_or_update_channel, colorMarker, first_connection, update_channel_state;
+    var add_or_not_message, add_or_update_channel, colorMarker, extractHashtags, first_connection, update_channel_state;
 
     window.scope = $scope;
     first_connection = true;
@@ -240,6 +240,11 @@
       console.log("toggleChannel", arguments, event);
       return event.preventDefault();
     };
+    extractHashtags = function(text) {
+      return _(text.match(/#(\w+)/g)).map(function(ht) {
+        return ht.slice(1);
+      });
+    };
     $scope.sendMessage = function() {
       console.log("Sending.Message", $scope.message.content);
       if (!$scope.me.username) {
@@ -253,7 +258,7 @@
       socket.emit("post", {
         author: $scope.me.username,
         content: $scope.message.content,
-        hashtags: $scope.current_channels,
+        hashtags: extractHashtags($scope.message.content),
         poi: $scope.poiMessage.name ? $scope.poiMessage : null
       });
       $scope.message.content = "";
