@@ -200,6 +200,9 @@ angular.module('cocity', ["google-maps"]).
       console.log "toggleChannel", arguments, event
       event.preventDefault()
 
+    extractHashtags = (text) ->
+      _(text.match(/#(\w+)/g)).map (ht) -> ht.slice(1)
+    
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
       return unless $scope.message.content
@@ -212,7 +215,7 @@ angular.module('cocity', ["google-maps"]).
       socket.emit "post",
         author: $scope.me.username
         content: $scope.message.content
-        hashtags: $scope.current_channels
+        hashtags: extractHashtags $scope.message.content 
         poi: if $scope.poiMessage.name then $scope.poiMessage else null
       $scope.message.content = ""
       $scope.poiMessage =
