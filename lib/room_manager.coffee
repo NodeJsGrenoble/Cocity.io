@@ -1,4 +1,5 @@
 uuid = require "uuid"
+util = require "util"
 
 @include = ->
 
@@ -34,12 +35,12 @@ uuid = require "uuid"
       cb []
 
   @on list_rooms: ->
-    console.log "List rooms", @io.sockets.manager.rooms
     @ack? _(@io.sockets.manager.rooms).chain().map (sockets, room) -> 
       if room.length > 1
         name: room.slice(1)
         users: sockets.length
     .compact().value()
+    console.log "List rooms", util.inspect(@io.sockets.manager.rooms, colors: on)
 
   @on me: (who)->
     @socket.set "me", who, =>
@@ -73,7 +74,6 @@ uuid = require "uuid"
         user: me
 
       @get_room_users @data, (users) =>
-        console.log "ack get_room_users", users, @ack
         @ack? users
 
         @join @data
@@ -82,13 +82,15 @@ uuid = require "uuid"
           name: @data
           users: users.length + 1
 
+        console.log util.inspect(@io.sockets.manager.rooms, colors: on)
+
 
 
   leave = ->
-    console.log "leaving"#, @socket.manager
+    console.log "leaving", @data
     rooms = @socket.manager.roomClients[@id]
     for name of rooms
-      if name
+      if name.slice(1) is @data
         @broadcast_to name.slice(1), "left",
           room: name
           id: @id
@@ -99,6 +101,8 @@ uuid = require "uuid"
           @broadcast_to "", "room_update",
             name: @data
             users: users.length
+
+          console.log util.inspect(@io.sockets.manager.rooms, colors: on)
 
 
   @on disconnect: leave

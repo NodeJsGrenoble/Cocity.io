@@ -88,6 +88,19 @@ angular.module('cocity', ["google-maps"]).
       console.log "channels, n", n, "o", o
     , true
 
+    $scope.toggleChannel = (channel, event) ->
+      removed = false
+      $scope.current_channels = _($scope.current_channels)
+        .reject (chan) -> 
+          chan is channel &&
+            removed = true
+      unless removed
+        $scope.current_channels.push channel        
+
+      
+      console.log "toggleChannel", arguments, event
+      event.preventDefault()
+
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
       socket.emit "post",
@@ -116,6 +129,7 @@ angular.module('cocity', ["google-maps"]).
     socket.on "connect", ->
 
       $scope.$watch "current_channels", (new_arr ,old_arr) ->
+        window.location.hash = "#"+new_arr.join("#")
         console.log "currents_channels", new_arr, old_arr
         # Trick to join on first init
         if new_arr is old_arr
@@ -138,11 +152,14 @@ angular.module('cocity', ["google-maps"]).
           socket.emit "leave", chan
           update_channel_state chan, joined: false
 
+
+
       , true
 
       hashchange.on current_channel = (hash) ->
-        console.log "new hash", (hash ? window.location.hash).split(/\#/)[1..-1]
-        $scope.current_channels = (hash ? window.location.hash).split(/\#/)[1..-1]
+        cur_hash_chans = (hash ? window.location.hash).split(/\#/)[1..-1]
+        unless _($scope.current_channels).isEqual cur_hash_chans
+          $scope.current_channels = (hash ? window.location.hash).split(/\#/)[1..-1]
 
       current_channel()
 
@@ -163,8 +180,8 @@ angular.module('cocity', ["google-maps"]).
 
     # Google Maps
     $scope.center = {
-      latitude: 40.705578
-      longitude: -73.978004
+      latitude: 45.1911576 #40.705578
+      longitude: 5.7186758 #-73.978004
     }
 
     if navigator.geolocation

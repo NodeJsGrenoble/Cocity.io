@@ -1,6 +1,37 @@
 require "colors"
 global.Q = require("q")
 global._ = require "underscore"
+request = require "request"
+
+fq = require "./config/fq.coffee"
+
+channels = 
+
+  cowork:
+    messages: [
+      {
+        id: "e9577827-5ad5-4484-9eeb-9c3d76f6029e"
+        post_data: 1371347132131
+        author: "Evangenieur"
+        content: "Cowork In Grenoble, Espace de Co-working : htt://co-work.fr"
+        poi:
+          name: "Cowork In Grenoble"
+          address: "12 rue Servan, Grenoble"
+          coord: [45.191259031049356, 5.73309227314969]
+      }
+
+    ]
+    poi: [
+      {
+        name: "Cowork In Grenoble"
+        address: "12 rue Servan, Grenoble"
+        coord: [45.191259031049356, 5.73309227314969]
+      }
+      {
+        name: "Col'Inn"
+        coord: [45.19083759999999, 5.718740599999999]
+      }
+    ]
 
 require("zappajs") 4500, ->
 
@@ -21,6 +52,14 @@ require("zappajs") 4500, ->
           "/js/angular-google-maps.js"
           "/js/script.js"
         ]
+
+  @get "/_suggest_poi": ->
+    request("https://api.foursquare.com/v2/venues/suggestcompletion?ll=#{@query.ll}&query=#{@query.search}&client_id=#{fq.client_id}&client_secret=#{fq.client_secret}&v=20130615&limit=10")
+    .pipe @res
+
+  @get "/_address2geo": ->
+    request("http://maps.googleapis.com/maps/api/geocode/json?address=#{@query.address}&sensor=false")
+    .pipe @res
 
   @get "/": ->
     @render "index", view_extend

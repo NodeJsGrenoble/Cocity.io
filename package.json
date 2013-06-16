@@ -7,7 +7,8 @@
     "jade": "~0.31.2",
     "q": "~0.9.6",
     "underscore": "~1.4.4",
-    "uuid": "~1.4.1"
+    "uuid": "~1.4.1",
+    "request": "~2.21.0"
   },
   "devDependencies": {
     "colors": "~0.6.0-1"
