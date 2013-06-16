@@ -165,6 +165,7 @@
     $scope.$watch("channels", function(n, o) {
       return console.log("channels, n", n, "o", o);
     }, true);
+    $scope.poiShow = false;
     $scope.isMapVisible = false;
     colorMarker = function(chan) {
       var pos;
@@ -214,9 +215,17 @@
       }
     };
     $scope.addPoi = function(name, lat, lng) {
+      console.log("addPoi");
       $scope.poiMessage.name = name;
       $scope.poiMessage.coord = [lat, lng];
-      return $scope.poiShow = !$scope.poiShow;
+      $("#local_search").val("");
+      return $scope.togglePoiShow();
+    };
+    $scope.togglePoiShow = function() {
+      $scope.poiShow = !$scope.poiShow;
+      if ($scope.poiShow) {
+        return $("#local_search").focus();
+      }
     };
     $scope.toggleChannel = function(channel, event) {
       var removed;
@@ -237,6 +246,10 @@
         return;
       }
       if (!$scope.me.username) {
+        setTimeout(function() {
+          $("#pseudoprompt").focus();
+          return console.log("Setting focus on", $("#pseudoprompt").first());
+        });
         return $scope.usernamePrompt = true;
       }
       $scope.usernamePrompt = false;
