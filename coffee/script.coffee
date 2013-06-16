@@ -127,13 +127,17 @@ angular.module('cocity', ["google-maps"]).
       console.log "channels, n", n, "o", o
     , true
 
+    $scope.poiShow = false
+
     # Map Refresh
     $scope.isMapVisible = false
+    
     colorMarker = (chan) ->
       pos = _($scope.channels).map((channel) ->
           channel.name
         ).indexOf chan
       Math.round((19 / $scope.channels.length) * pos + 1)
+    
     $scope.paneChanged = (selectedPane) ->
 
       if selectedPane.title is "Maps"
@@ -172,10 +176,16 @@ angular.module('cocity', ["google-maps"]).
         )
 
     $scope.addPoi = (name, lat, lng)->
+      console.log "addPoi"
       $scope.poiMessage.name = name
       $scope.poiMessage.coord = [lat, lng]
+      $("#local_search").val("")
+      $scope.togglePoiShow()
 
+    $scope.togglePoiShow = ->  
       $scope.poiShow = !$scope.poiShow
+      if $scope.poiShow 
+        $("#local_search").focus()
 
     $scope.toggleChannel = (channel, event) ->
       removed = false
@@ -193,6 +203,9 @@ angular.module('cocity', ["google-maps"]).
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
       if not $scope.me.username
+        setTimeout -> 
+          $("#pseudoprompt").focus()
+          console.log "Setting focus on", $("#pseudoprompt").first()
         return $scope.usernamePrompt = true
       $scope.usernamePrompt = false
       socket.emit "post",
