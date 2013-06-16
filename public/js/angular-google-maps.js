@@ -182,6 +182,8 @@
       
       this.addMarker = function (lat, lng, icon, infoWindowContent, label, url,
           thumbnail) {
+
+        console.log("addMarker", arguments);
         
         if (that.findMarker(lat, lng) != null) {
           return;

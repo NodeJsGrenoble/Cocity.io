@@ -100,6 +100,11 @@ angular.module('cocity', ["google-maps"]).
 
     # Map Refresh
     $scope.isMapVisible = false
+    colorMarker = (chan) ->
+      pos = _($scope.channels).map((channel) ->
+          channel.name
+        ).indexOf chan
+      Math.round((19 / $scope.channels.length) * pos + 1)
     $scope.paneChanged = (selectedPane) ->
 
       if selectedPane.title is "Maps"
@@ -112,10 +117,14 @@ angular.module('cocity', ["google-maps"]).
       console.log "filter?", 
       _($filter('matchCurrentChannels') $scope.messages, $scope.current_channels)
       .each (message) ->
-          $scope.markers.push
-            latitude: message.poi.coord[0]
-            longitude: message.poi.coord[1]
-            icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        console.log "colorMarker", "http://#{window.location.host}/img/pin-#{colorMarker message.hashtags[0]}.png"
+        $scope.markers.push(
+          latitude: message.poi.coord[0]
+          longitude: message.poi.coord[1]
+          infoWindow: message.poi.name
+          icon: "/img/pins/pin-#{colorMarker message.hashtags[0]}.png"
+        )
+      console.log "markers", $scope.markers
 
 
     $scope.toggleChannel = (channel, event) ->
@@ -148,6 +157,7 @@ angular.module('cocity', ["google-maps"]).
         $scope.channels.push room
 
     add_or_not_message = (msg) ->
+      msg.content = msg.content.autoLink()
       unless _($scope.messages).find((message) -> message.id is msg.id)
         $scope.messages.push msg
 
@@ -262,3 +272,30 @@ angular.module('cocity', ["google-maps"]).
         })
     }
   )
+
+### String HTTP Linker ###
+
+autoLink = (options...) ->
+  pattern = ///
+    (^|\s) # Capture the beginning of string or leading whitespace
+    (
+      (?:https?|ftp):// # Look for a valid URL protocol (non-captured)
+      [\-A-Z0-9+\u0026@#/%?=~_|!:,.;]* # Valid URL characters (any number of times)
+      [\-A-Z0-9+\u0026@#/%=~_|] # String must end in a valid URL character
+    )
+  ///gi
+
+  return @replace(pattern, "$1<a href='$2'>$2</a>") unless options.length > 0
+
+  option = options[0]
+  linkAttributes = (
+    " #{k}='#{v}'" for k, v of option when k isnt 'callback'
+  ).join('')
+
+  @replace pattern, (match, space, url) ->
+    link = option.callback?(url) or
+      "<a href='#{url}'#{linkAttributes}>#{url}</a>"
+
+    "#{space}#{link}"
+
+String::autoLink = autoLink

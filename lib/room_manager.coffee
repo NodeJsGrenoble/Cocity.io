@@ -59,10 +59,13 @@ rooms_messages = require "../data/mock.coffee"
   
   @on post: ->
     _(@data.hashtags.concat [""]).each (hashtag) =>
+      msg = _(@data).defaults 
+        id: uuid.v4()
+        post_data: (new Date()).getTime()
       console.log "Sending Post to #{hashtag}"
-      @broadcast_to hashtag, "post",
-        _(@data).defaults
-          id: uuid.v4()
+      if hashtag
+        (rooms_messages[hashtag] or= []).push msg
+      @broadcast_to hashtag, "post", msg
 
 
   # One2One for WebRTC Nego

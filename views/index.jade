@@ -6,12 +6,12 @@ block content
       pane(title="Chat")
         .chat
           h2.tab-pane__title Bienvenue sur CoCity
-          ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'post_date'")
+          ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'-post_date'")
             li.message
               span.message__user
                 {{message.author}}
               p.message__content
-                {{message.content}}
+                span(ng-bind-html-unsafe="message.content")
                 a(href="#", class="message__hash", 
                   ng-repeat='hash in message.hashtags', ng-click="toggleChannel(hash, $event)")
                     # {{ hash }}

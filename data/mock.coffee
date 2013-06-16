@@ -14,7 +14,7 @@ module.exports =
       id: "e9577827-5ad5-4484-9eeb-9c3d76f6028e"
       post_data: 1371347132131
       author: "Thierry"
-      content: "Cowork In Grenoble, Espace de Co-working : htt://co-work.fr"
+      content: "Cowork In Grenoble, Espace de Co-working : http://co-work.fr"
       poi:
         name: "Cowork In Grenoble"
         address: "12 rue Servan, Grenoble"
