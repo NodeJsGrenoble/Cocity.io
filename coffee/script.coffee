@@ -78,7 +78,7 @@ angular.module('cocity', ["google-maps"]).
       else 
         messages
   ).
-  controller('AppCtrl', ($scope, $filter, socket, hashchange) ->
+  controller('AppCtrl', ($scope, $filter, $http, socket, hashchange) ->
     window.scope = $scope
 
     first_connection = true
@@ -126,17 +126,41 @@ angular.module('cocity', ["google-maps"]).
         )
       console.log "markers", $scope.markers
 
+    $scope.poiResults = []
+    $scope.poiMessage = {
+      name: "",
+      lat: 0,
+      lng: 0
+    }
+
+    $scope.typeahead = (search)->
+      if search.length > 2
+        $http({
+          url: "/_suggest_poi"
+          method: "GET"
+          params: {ll: $scope.center.latitude + ',' + $scope.center.longitude, search: search}
+        }).success( (data) ->
+          console.log data
+          $scope.poiResults = data.response.minivenues
+        )
+
+    $scope.addPoi = (name, lat, lng)->
+      $scope.poiMessage.name = name
+      $scope.poiMessage.lat = lat
+      $scope.poiMessage.lng = lng
+
+      $scope.poiShow = !$scope.poiShow
 
     $scope.toggleChannel = (channel, event) ->
       removed = false
       $scope.current_channels = _($scope.current_channels)
-        .reject (chan) -> 
+        .reject (chan) ->
           chan is channel &&
             removed = true
       unless removed
-        $scope.current_channels.push channel        
+        $scope.current_channels.push channel
 
-      
+
       console.log "toggleChannel", arguments, event
       event.preventDefault()
 

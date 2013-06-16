@@ -246,6 +246,16 @@ $poi-search-bg: #2ecc71;
   opacity: 1;
   @include transition(top .2s ease-out);
 
+  @include mq-max-w(500px){
+    width: 100%;
+    top: -125px;
+    right: 0px;
+
+    &:before, &:after{
+      display: none;
+    }
+  }
+
   &.is-hidden{
     top: 0px;
     opacity: 0;
@@ -323,6 +333,64 @@ $poi-search-bg: #2ecc71;
 
     &:hover{
       opacity: 1;
+    }
+  }
+}
+
+.poir-search__results{
+  overflow-y: scroll;
+  height: 72px;
+}
+
+.poi-search__name{
+  font-size: 12px;
+  margin: 0 0 3px;
+  padding: .3em .4em;
+  display: block;
+  cursor: pointer;
+
+  &:hover{
+    background: #F2F2F2;
+  }
+
+  &:active{
+    background: $primary-bg-color;
+    color: $primary-text-color;
+  }
+}
+
+.post__poi{
+  position: absolute;
+  right: 60px;
+  top: 13px;
+  font-size: 12px;
+  display: inline-block;
+  padding: .4em 1em .4em 1.2em;
+  background: #F2F2F2;
+  border: 1px solid #DDD;
+
+  @include mq-max-w(750px){
+    right: 0px;
+    top: -28px;
+    background: #FFF;
+  }
+
+  @include mq-max-w(450px){
+    right: 0px;
+    top: -28px;
+    background: #FFF;
+    font-size: 13px;
+  }
+
+  i{
+    position: relative;
+    left: -.4em;
+    top: 2px;
+    color: #AAA;
+    cursor: pointer;
+
+    &:hover{
+      color: #555;
     }
   }
 }
