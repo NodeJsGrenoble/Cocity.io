@@ -86,6 +86,14 @@ angular.module('cocity', ["google-maps"]).
     '''
     replace: true
   ).
+  directive('onFocus', ->
+    #console.log "FOCUS?"
+    restrict: 'A'
+    link: (scope, element, attrs) ->
+        console.log "focus on", element
+        element.bind 'focus', ->
+          scope.$eval(attrs.onFocus)
+  ).
   factory("hashchange", ($rootScope) ->
     last_hash = window.location.hash
     on: (cb) ->
@@ -224,6 +232,12 @@ angular.module('cocity', ["google-maps"]).
       console.log "toggleChannel", arguments, event
       event.preventDefault()
 
+    $scope.inputFocus = ->
+      $scope.$apply ->
+        $scope.message.content = _($scope.current_channels).map((chan) ->
+          "#" + chan
+        ).join(" ") + " "
+
     extractHashtags = (text) ->
       _(text.match(/#(\w+)/g)).map (ht) -> ht.slice(1)
 
@@ -233,7 +247,6 @@ angular.module('cocity', ["google-maps"]).
       if not $scope.me.username
         setTimeout ->
           $("#pseudoprompt").focus()
-          console.log "Setting focus on", $("#pseudoprompt").first()
         return $scope.usernamePrompt = true
       $scope.usernamePrompt = false
       socket.emit "post",
