@@ -172,13 +172,11 @@
         }
         _(new_arr).difference(old_arr).forEach(function(chan) {
           console.log("Joining " + chan);
-          return socket.emit("join", chan, function(users) {
-            console.log("Joined " + chan + ", Users", users.length);
-            return add_or_update_channel({
-              name: chan,
-              users: users.length,
+          return socket.emit("join", chan, function(channel) {
+            console.log("Joined " + channel + ", channel", channel);
+            return add_or_update_channel(_(channel).defaults({
               joined: true
-            });
+            }));
           });
         });
         console.log("leave", _(old_arr).difference(new_arr));

@@ -29,7 +29,7 @@ rooms_messages = require "../data/mock.coffee"
       Q.all(
         _(@io.sockets.manager.rooms["/#{room}"]).map (socket_id) =>
           deferred = new Q.defer()
-          @io.sockets.sockets[socket_id].get "me", (err, user) ->
+          @io.sockets.sockets[socket_id]?.get "me", (err, user) ->
             deferred.resolve(user)
           deferred.promise
       ).done cb
@@ -83,6 +83,7 @@ rooms_messages = require "../data/mock.coffee"
         user: me
 
       @get_room_users @data, (users) =>
+        console.log "Messages for room #{@data}", rooms_messages[@data]?
         @ack? \
           users: users
           messages: rooms_messages[@data]

@@ -138,11 +138,9 @@ angular.module('cocity', ["google-maps"]).
         _(new_arr).difference(old_arr).forEach (chan) ->
           console.log "Joining #{chan}"
 
-          socket.emit "join", chan , (users) ->
-            console.log "Joined #{chan}, Users", users.length
-            add_or_update_channel
-              name: chan
-              users: users.length
+          socket.emit "join", chan , (channel) ->
+            console.log "Joined #{channel}, channel", channel
+            add_or_update_channel _(channel).defaults
               joined: true
 
         console.log "leave",  _(old_arr).difference(new_arr)
