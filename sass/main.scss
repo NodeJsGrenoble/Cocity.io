@@ -503,6 +503,9 @@ $poi-search-bg: #2ecc71;
     width: 50%;
     padding: 0 20px;
     float: left;
+    overflow: scroll;
+    height: 100%;
+    padding-bottom: 120px;
   }
 }
 
@@ -510,6 +513,7 @@ $poi-search-bg: #2ecc71;
   @include mq-min-w(1280px){
     width: 50%;
     float: left;
+    position: sticky;
   }
 }
 

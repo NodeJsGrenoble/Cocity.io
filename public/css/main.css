@@ -531,15 +531,19 @@ a.message__hash {
   .chat {
     width: 50%;
     padding: 0 20px;
-    float: left; } }
+    float: left;
+    overflow: scroll;
+    height: 100%;
+    padding-bottom: 120px; } }
 
 @media screen and (min-width: 1280px) {
-  /* line 509, ../../sass/main.scss */
+  /* line 512, ../../sass/main.scss */
   .map {
     width: 50%;
-    float: left; } }
+    float: left;
+    position: sticky; } }
 
-/* line 519, ../../sass/main.scss */
+/* line 523, ../../sass/main.scss */
 .modal {
   width: 98%;
   max-width: 400px;
@@ -556,7 +560,7 @@ a.message__hash {
   margin-left: -200px;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); }
   @media screen and (max-width: 500px) {
-    /* line 519, ../../sass/main.scss */
+    /* line 523, ../../sass/main.scss */
     .modal {
       height: 100%;
       min-height: 100%;
@@ -567,27 +571,27 @@ a.message__hash {
       right: 1%;
       margin: 0px; } }
 
-/* line 547, ../../sass/main.scss */
+/* line 551, ../../sass/main.scss */
 .modal__title {
   font-weight: 500;
   font-size: 18px; }
 
-/* line 552, ../../sass/main.scss */
+/* line 556, ../../sass/main.scss */
 .modal__input, .modal__submit {
   padding: .7em 1.2em;
   margin-top: 14px;
   font-size: 13px; }
 
-/* line 558, ../../sass/main.scss */
+/* line 562, ../../sass/main.scss */
 .modal__input {
   width: 80%;
   border: 1px solid #DDD; }
-  /* line 562, ../../sass/main.scss */
+  /* line 566, ../../sass/main.scss */
   .modal__input:focus {
     outline: none;
     box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3); }
 
-/* line 568, ../../sass/main.scss */
+/* line 572, ../../sass/main.scss */
 .modal__submit {
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: #2ecc71;
