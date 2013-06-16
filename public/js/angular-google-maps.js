@@ -467,8 +467,8 @@
         else {
           scope.$watch("refresh()", function (newValue, oldValue) {
             if (newValue && !oldValue) {
+              //markerWatcher();
               _m.draw();
-              markerWatcher();
             }
           }); 
         }
@@ -476,7 +476,7 @@
         var markerWatcher = function() {
           // Markers
           scope.$watch("markers", function (newValue, oldValue) {
-            
+            console.log("markers", newValue, oldValue);
             $timeout(function () {
               
               angular.forEach(newValue, function (v, i) {
