@@ -3,7 +3,7 @@ angular.module('cocity', ["google-maps"]).
   directive('tabs', ->
     restrict: 'E'
     transclude: true
-    scope: {}
+    scope: {paneChanged: '&'}
     controller: ($scope, $element) ->
       panes = $scope.panes = []
 
@@ -11,6 +11,7 @@ angular.module('cocity', ["google-maps"]).
         angular.forEach panes, (pane) ->
           pane.selected = false
         pane.selected = true
+        $scope.paneChanged selectedPane: pane
 
       @addPane = (pane) ->
         $scope.select(pane) if panes.length is 0
@@ -68,7 +69,16 @@ angular.module('cocity', ["google-maps"]).
         $rootScope.$apply ->
           ack?.apply socket, args
   ).
-  controller('AppCtrl', ($scope, socket, hashchange) ->
+  filter("matchCurrentChannels", ->
+    (messages, current_channels) ->
+      console.log "Filtering", messages, current_channels, arguments 
+      if current_channels?.length
+        _(messages).filter (msg) ->
+          _(msg.hashtags).intersection(current_channels).length
+      else 
+        messages
+  ).
+  controller('AppCtrl', ($scope, $filter, socket, hashchange) ->
     window.scope = $scope
 
     first_connection = true
@@ -87,6 +97,26 @@ angular.module('cocity', ["google-maps"]).
     $scope.$watch "channels", (n,o) ->
       console.log "channels, n", n, "o", o
     , true
+
+    # Map Refresh
+    $scope.isMapVisible = false
+    $scope.paneChanged = (selectedPane) ->
+
+      if selectedPane.title is "Maps"
+        $scope.isMapVisible = true
+      else
+        $scope.isMapVisible = false
+
+      $scope.markers = []
+      
+      console.log "filter?", 
+      _($filter('matchCurrentChannels') $scope.messages, $scope.current_channels)
+      .each (message) ->
+          $scope.markers.push
+            latitude: message.poi.coord[0]
+            longitude: message.poi.coord[1]
+            icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+
 
     $scope.toggleChannel = (channel, event) ->
       removed = false
@@ -144,10 +174,11 @@ angular.module('cocity', ["google-maps"]).
           console.log "Joining #{chan}"
 
           socket.emit "join", chan , (channel) ->
-            console.log "Joined #{channel}, channel", channel
-            add_or_update_channel _(channel).defaults
+            add_or_update_channel _(channel).defaults(
               joined: true
-
+            )
+            _(channel.messages).each (msg) ->
+              add_or_not_message msg
         console.log "leave",  _(old_arr).difference(new_arr)
         # Chan to Leave
         _(old_arr).difference(new_arr).forEach (chan) ->
@@ -182,6 +213,7 @@ angular.module('cocity', ["google-maps"]).
       add_or_update_channel room
 
     # Google Maps
+    $scope.zoom = 13
     $scope.center = {
       latitude: 45.1911576 #40.705578
       longitude: 5.7186758 #-73.978004
@@ -189,16 +221,17 @@ angular.module('cocity', ["google-maps"]).
 
     if navigator.geolocation
       navigator.geolocation.getCurrentPosition((position) ->
+        console.log position
+        ###
         $scope.$apply ->
           $scope.center = {
             latitude: position.coords.latitude
             longitude: position.coords.longitude
           }
+        ###
       )
 
     $scope.markers = []
-
-    $scope.zoom = 6
 
     socket.on "post", (post) ->
       console.log "post", post

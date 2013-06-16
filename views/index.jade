@@ -2,11 +2,11 @@ extends layout
 
 block content
   .app(ng-controller="AppCtrl")
-    tabs
+    tabs(pane-changed="paneChanged(selectedPane)")
       pane(title="Chat")
         .chat
           h2.tab-pane__title Bienvenue sur CoCity
-          ul(ng-repeat="message in messages")
+          ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'post_date'")
             li.message
               span.message__user
                 {{message.author}}
@@ -32,9 +32,9 @@ block content
           input(type="text", placeholder="Pseudo…", ng-model="me.username", class="modal__input")
           br
           input(type="submit", value="Valider", class="modal__submit")
-      pane(title="Maps")
+      pane(title="Maps", ng-click="test()")
         .map
-          google-map(center="center", draggable="true", zoom="zoom", markers="markers")
+          google-map(center="center", draggable="true", zoom="zoom", markers="markers", refresh="isMapVisible")
       pane(title="Channels")
         .channels
           h2.tab-pane__title Bienvenue sur la liste des channels

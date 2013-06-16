@@ -6,7 +6,9 @@
     return {
       restrict: 'E',
       transclude: true,
-      scope: {},
+      scope: {
+        paneChanged: '&'
+      },
       controller: function($scope, $element) {
         var panes;
 
@@ -15,7 +17,10 @@
           angular.forEach(panes, function(pane) {
             return pane.selected = false;
           });
-          return pane.selected = true;
+          pane.selected = true;
+          return $scope.paneChanged({
+            selectedPane: pane
+          });
         };
         return this.addPane = function(pane) {
           if (panes.length === 0) {
@@ -90,7 +95,18 @@
         });
       }
     };
-  }).controller('AppCtrl', function($scope, socket, hashchange) {
+  }).filter("matchCurrentChannels", function() {
+    return function(messages, current_channels) {
+      console.log("Filtering", messages, current_channels, arguments);
+      if (current_channels != null ? current_channels.length : void 0) {
+        return _(messages).filter(function(msg) {
+          return _(msg.hashtags).intersection(current_channels).length;
+        });
+      } else {
+        return messages;
+      }
+    };
+  }).controller('AppCtrl', function($scope, $filter, socket, hashchange) {
     var add_or_not_message, add_or_update_channel, first_connection, update_channel_state;
 
     window.scope = $scope;
@@ -109,6 +125,22 @@
     $scope.$watch("channels", function(n, o) {
       return console.log("channels, n", n, "o", o);
     }, true);
+    $scope.isMapVisible = false;
+    $scope.paneChanged = function(selectedPane) {
+      if (selectedPane.title === "Maps") {
+        $scope.isMapVisible = true;
+      } else {
+        $scope.isMapVisible = false;
+      }
+      $scope.markers = [];
+      return console.log("filter?", _($filter('matchCurrentChannels')($scope.messages, $scope.current_channels)).each(function(message) {
+        return $scope.markers.push({
+          latitude: message.poi.coord[0],
+          longitude: message.poi.coord[1],
+          icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+        });
+      }));
+    };
     $scope.toggleChannel = function(channel, event) {
       var removed;
 
@@ -178,10 +210,12 @@
         _(new_arr).difference(old_arr).forEach(function(chan) {
           console.log("Joining " + chan);
           return socket.emit("join", chan, function(channel) {
-            console.log("Joined " + channel + ", channel", channel);
-            return add_or_update_channel(_(channel).defaults({
+            add_or_update_channel(_(channel).defaults({
               joined: true
             }));
+            return _(channel.messages).each(function(msg) {
+              return add_or_not_message(msg);
+            });
           });
         });
         console.log("leave", _(old_arr).difference(new_arr));
@@ -224,22 +258,25 @@
       console.log("room_update", room);
       return add_or_update_channel(room);
     });
+    $scope.zoom = 13;
     $scope.center = {
       latitude: 45.1911576,
       longitude: 5.7186758
     };
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
-        return $scope.$apply(function() {
-          return $scope.center = {
-            latitude: position.coords.latitude,
+        return console.log(position);
+        /*
+        $scope.$apply ->
+          $scope.center = {
+            latitude: position.coords.latitude
             longitude: position.coords.longitude
-          };
-        });
+          }
+        */
+
       });
     }
     $scope.markers = [];
-    $scope.zoom = 6;
     return socket.on("post", function(post) {
       console.log("post", post);
       if ((_(post.hashtags).intersection($scope.current_channels).length > 0) || ($scope.current_channels.length === 0)) {

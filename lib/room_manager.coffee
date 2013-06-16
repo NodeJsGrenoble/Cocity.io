@@ -45,7 +45,7 @@ rooms_messages = require "../data/mock.coffee"
         _(rooms_messages).keys()
 
     @ack? chans = _(channels).map (channel) => 
-      name: channel or "Grenoble"
+      name: channel
       users: @io.sockets.manager.rooms["/#{channel}"]?.length ? 0
       messages: rooms_messages[channel] ? []
     console.log "List rooms", util.inspect(@io.sockets.manager.rooms, colors: on)
@@ -83,10 +83,12 @@ rooms_messages = require "../data/mock.coffee"
         user: me
 
       @get_room_users @data, (users) =>
-        console.log "Messages for room #{@data}", rooms_messages[@data]?
-        @ack? \
-          users: users
+        console.log "Messages for room #{@data}", rooms_messages[@data]
+        @ack?(
+          name: @data
+          users: users.length 
           messages: rooms_messages[@data]
+        )
 
         @join @data
 
