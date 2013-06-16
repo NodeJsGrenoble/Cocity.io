@@ -1,6 +1,8 @@
 uuid = require "uuid"
 util = require "util"
 
+rooms_messages = require "../data/mock.coffee"
+
 @include = ->
 
   @on "connection": ->
@@ -35,12 +37,19 @@ util = require "util"
       cb []
 
   @on list_rooms: ->
-    @ack? _(@io.sockets.manager.rooms).chain().map (sockets, room) -> 
-      if room.length > 1
-        name: room.slice(1)
-        users: sockets.length
-    .compact().value()
+    channels = _(
+      _(@io.sockets.manager.rooms).chain().keys().map((route) -> route.slice 1).value().concat \
+        _(rooms_messages).keys()
+    ).uniq()
+    console.log "channels", _(@io.sockets.manager.rooms).chain().keys().map((route) -> route.slice 1).value().concat \
+        _(rooms_messages).keys()
+
+    @ack? chans = _(channels).map (channel) => 
+      name: channel or "Grenoble"
+      users: @io.sockets.manager.rooms["/#{channel}"]?.length ? 0
+      messages: rooms_messages[channel] ? []
     console.log "List rooms", util.inspect(@io.sockets.manager.rooms, colors: on)
+    console.log "List chans", util.inspect(chans, colors: on)
 
   @on me: (who)->
     @socket.set "me", who, =>
@@ -74,7 +83,9 @@ util = require "util"
         user: me
 
       @get_room_users @data, (users) =>
-        @ack? users
+        @ack? \
+          users: users
+          messages: rooms_messages[@data]
 
         @join @data
 
