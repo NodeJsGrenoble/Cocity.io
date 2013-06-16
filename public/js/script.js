@@ -90,7 +90,7 @@
         });
       }
     };
-  }).controller('AppCtrl', function($scope, socket, hashchange) {
+  }).controller('AppCtrl', function($scope, socket, hashchange, $http) {
     var add_or_not_message, add_or_update_channel, first_connection, update_channel_state;
 
     window.scope = $scope;
@@ -109,6 +109,33 @@
     $scope.$watch("channels", function(n, o) {
       return console.log("channels, n", n, "o", o);
     }, true);
+    $scope.poiResults = [];
+    $scope.poiMessage = {
+      name: "",
+      lat: 0,
+      lng: 0
+    };
+    $scope.typeahead = function(search) {
+      if (search.length > 2) {
+        return $http({
+          url: "/_suggest_poi",
+          method: "GET",
+          params: {
+            ll: $scope.center.latitude + ',' + $scope.center.longitude,
+            search: search
+          }
+        }).success(function(data) {
+          console.log(data);
+          return $scope.poiResults = data.response.minivenues;
+        });
+      }
+    };
+    $scope.addPoi = function(name, lat, lng) {
+      $scope.poiMessage.name = name;
+      $scope.poiMessage.lat = lat;
+      $scope.poiMessage.lng = lng;
+      return $scope.poiShow = !$scope.poiShow;
+    };
     $scope.toggleChannel = function(channel, event) {
       var removed;
 
