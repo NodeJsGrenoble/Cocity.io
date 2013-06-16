@@ -80,7 +80,7 @@ angular.module('cocity', ["google-maps"]).
       content: ""
 
     $scope.me =
-      username: "Anon" + (Math.round(Math.random() * 90000) + 10000)
+      username: ""
       avatar: ""
       userAgent: navigator.userAgent
 
@@ -90,6 +90,9 @@ angular.module('cocity', ["google-maps"]).
 
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
+      if not $scope.me.username
+        return $scope.usernamePrompt = true
+      $scope.usernamePrompt = false
       socket.emit "post",
         author: $scope.me.username
         content: $scope.message.content

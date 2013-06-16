@@ -102,7 +102,7 @@
       content: ""
     };
     $scope.me = {
-      username: "Anon" + (Math.round(Math.random() * 90000) + 10000),
+      username: "",
       avatar: "",
       userAgent: navigator.userAgent
     };
@@ -111,6 +111,10 @@
     }, true);
     $scope.sendMessage = function() {
       console.log("Sending.Message", $scope.message.content);
+      if (!$scope.me.username) {
+        return $scope.usernamePrompt = true;
+      }
+      $scope.usernamePrompt = false;
       socket.emit("post", {
         author: $scope.me.username,
         content: $scope.message.content,
