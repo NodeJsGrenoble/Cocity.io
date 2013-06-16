@@ -6,6 +6,13 @@ block content
       pane(title="Chat")
         .chat
           h2.tab-pane__title Bienvenue sur CoCity
+          ul
+            li.chan(ng-repeat="chan in channels", ng-class="{'is-active': chan.joined == true}")
+              a(href="#" ,ng-click="toggleChannel(chan.name, $event)")
+                span.chan__name # {{chan.name}}
+                span.chan__nb-users
+                  i.ss-icon users
+                  {{chan.users}}
           ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'-post_date'")
             li.message
               span.message__user

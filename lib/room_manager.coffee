@@ -57,6 +57,9 @@ rooms_messages = require "../data/mock.coffee"
       @ack?()
 
   
+  @on get_posts: ->
+    @ack? _(rooms_messages).chain().values().flatten().value()
+
   @on post: ->
     _(@data.hashtags.concat [""]).each (hashtag) =>
       msg = _(@data).defaults 

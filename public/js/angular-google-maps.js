@@ -467,62 +467,68 @@
         else {
           scope.$watch("refresh()", function (newValue, oldValue) {
             if (newValue && !oldValue) {
+              console.log("MAPREFRESHING");
               _m.draw();
+              markerWatcher();
             }
           }); 
         }
         
-        // Markers
-        scope.$watch("markers", function (newValue, oldValue) {
-          
-          $timeout(function () {
+        var markerWatcher = function() {
+          // Markers
+          scope.$watch("markers", function (newValue, oldValue) {
             
-            angular.forEach(newValue, function (v, i) {
-              if (!_m.hasMarker(v.latitude, v.longitude)) {
-                _m.addMarker(v.latitude, v.longitude, v.icon, v.infoWindow);
-              }
-            });
-            
-            // Clear orphaned markers
-            var orphaned = [];
-            
-            angular.forEach(_m.getMarkerInstances(), function (v, i) {
-              // Check our scope if a marker with equal latitude and longitude. 
-              // If not found, then that marker has been removed form the scope.
+            $timeout(function () {
               
-              var pos = v.getPosition(),
-                lat = pos.lat(),
-                lng = pos.lng(),
-                found = false;
-              
-              // Test against each marker in the scope
-              for (var si = 0; si < scope.markers.length; si++) {
-                
-                var sm = scope.markers[si];
-                
-                if (floatEqual(sm.latitude, lat) && floatEqual(sm.longitude, lng)) {
-                  // Map marker is present in scope too, don't remove
-                  found = true;
+              angular.forEach(newValue, function (v, i) {
+                if (!_m.hasMarker(v.latitude, v.longitude)) {
+                  _m.addMarker(v.latitude, v.longitude, v.icon, v.infoWindow);
                 }
-              }
+              });
               
-              // Marker in map has not been found in scope. Remove.
-              if (!found) {
-                orphaned.push(v);
+              // Clear orphaned markers
+              var orphaned = [];
+              
+              angular.forEach(_m.getMarkerInstances(), function (v, i) {
+                // Check our scope if a marker with equal latitude and longitude. 
+                // If not found, then that marker has been removed form the scope.
+                
+                var pos = v.getPosition(),
+                  lat = pos.lat(),
+                  lng = pos.lng(),
+                  found = false;
+                
+                // Test against each marker in the scope
+                for (var si = 0; si < scope.markers.length; si++) {
+                  
+                  var sm = scope.markers[si];
+                  
+                  if (floatEqual(sm.latitude, lat) && floatEqual(sm.longitude, lng)) {
+                    // Map marker is present in scope too, don't remove
+                    found = true;
+                  }
+                }
+                
+                // Marker in map has not been found in scope. Remove.
+                if (!found) {
+                  orphaned.push(v);
+                }
+              });
+
+              orphaned.length && _m.removeMarkers(orphaned);           
+              
+              // Fit map when there are more than one marker. 
+              // This will change the map center coordinates
+              if (attrs.fit == "true" && newValue && newValue.length > 1) {
+                _m.fit();
               }
             });
-
-            orphaned.length && _m.removeMarkers(orphaned);           
             
-            // Fit map when there are more than one marker. 
-            // This will change the map center coordinates
-            if (attrs.fit == "true" && newValue && newValue.length > 1) {
-              _m.fit();
-            }
-          });
-          
-        }, true);
+          }, true);
         
+        };
+        
+        markerWatcher();
         
         // Update map when center coordinates change
         scope.$watch("center", function (newValue, oldValue) {

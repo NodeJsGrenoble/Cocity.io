@@ -1,3 +1,32 @@
+### String HTTP Linker ###
+
+autoLink = (options...) ->
+  pattern = ///
+    (^|\s) # Capture the beginning of string or leading whitespace
+    (
+      (?:https?|ftp):// # Look for a valid URL protocol (non-captured)
+      [\-A-Z0-9+\u0026@#/%?=~_|!:,.;]* # Valid URL characters (any number of times)
+      [\-A-Z0-9+\u0026@#/%=~_|] # String must end in a valid URL character
+    )
+  ///gi
+
+  return @replace(pattern, "$1<a href='$2'>$2</a>") unless options.length > 0
+
+  option = options[0]
+  linkAttributes = (
+    " #{k}='#{v}'" for k, v of option when k isnt 'callback'
+  ).join('')
+
+  @replace pattern, (match, space, url) ->
+    link = option.callback?(url) or
+      "<a href='#{url}'#{linkAttributes}>#{url}</a>"
+
+    "#{space}#{link}"
+
+String::autoLink = autoLink
+
+
+### Angular App ###
 
 angular.module('cocity', ["google-maps"]).
   directive('tabs', ->
@@ -117,21 +146,19 @@ angular.module('cocity', ["google-maps"]).
       console.log "filter?", 
       _($filter('matchCurrentChannels') $scope.messages, $scope.current_channels)
       .each (message) ->
-        console.log "colorMarker", "http://#{window.location.host}/img/pin-#{colorMarker message.hashtags[0]}.png"
-        $scope.markers.push(
-          latitude: message.poi.coord[0]
-          longitude: message.poi.coord[1]
-          infoWindow: message.poi.name
-          icon: "/img/pins/pin-#{colorMarker message.hashtags[0]}.png"
-        )
+        if message.poi
+          $scope.markers.push(
+            latitude: message.poi.coord[0]
+            longitude: message.poi.coord[1]
+            infoWindow: message.poi.name
+            icon: "/img/pins/pin-#{colorMarker message.hashtags[0]}.png"
+          )
       console.log "markers", $scope.markers
 
     $scope.poiResults = []
-    $scope.poiMessage = {
-      name: "",
-      lat: 0,
-      lng: 0
-    }
+    $scope.poiMessage = 
+      name: ""
+      coord: []
 
     $scope.typeahead = (search)->
       if search.length > 2
@@ -146,8 +173,7 @@ angular.module('cocity', ["google-maps"]).
 
     $scope.addPoi = (name, lat, lng)->
       $scope.poiMessage.name = name
-      $scope.poiMessage.lat = lat
-      $scope.poiMessage.lng = lng
+      $scope.poiMessage.coord = [lat, lng]
 
       $scope.poiShow = !$scope.poiShow
 
@@ -173,7 +199,11 @@ angular.module('cocity', ["google-maps"]).
         author: $scope.me.username
         content: $scope.message.content
         hashtags: $scope.current_channels
+        poi: if $scope.poiMessage.name then $scope.poiMessage else null
       $scope.message.content = ""
+      $scope.poiMessage = 
+        name: ""
+        coord: []
 
 
     add_or_update_channel = (room) ->
@@ -181,7 +211,7 @@ angular.module('cocity', ["google-maps"]).
         $scope.channels.push room
 
     add_or_not_message = (msg) ->
-      msg.content = msg.content.autoLink()
+      msg.content = msg.content?.autoLink(target: "_blank")
       unless _($scope.messages).find((message) -> message.id is msg.id)
         $scope.messages.push msg
 
@@ -220,6 +250,13 @@ angular.module('cocity', ["google-maps"]).
           socket.emit "leave", chan
           update_channel_state chan, joined: false
 
+        if not $scope.current_channels?.length and not $scope.messages?.length
+          socket.emit "get_posts", (msgs) ->
+            console.log "get_posts", msgs
+            _(msgs).each (msg) ->
+              add_or_not_message msg
+
+
 
 
       , true
@@ -231,6 +268,7 @@ angular.module('cocity', ["google-maps"]).
 
       current_channel()
 
+
       # Reconnect on deco
       unless first_connection
         window.location.reload()
@@ -240,7 +278,8 @@ angular.module('cocity', ["google-maps"]).
         # List Rooms
         socket.emit "list_rooms", (rooms) ->
           console.log "list_rooms", rooms
-          add_or_update_channel room for room in rooms
+          for room in rooms
+            add_or_update_channel room if room.name
 
     socket.on "room_update", (room) ->
       console.log "room_update", room
@@ -297,29 +336,3 @@ angular.module('cocity', ["google-maps"]).
     }
   )
 
-### String HTTP Linker ###
-
-autoLink = (options...) ->
-  pattern = ///
-    (^|\s) # Capture the beginning of string or leading whitespace
-    (
-      (?:https?|ftp):// # Look for a valid URL protocol (non-captured)
-      [\-A-Z0-9+\u0026@#/%?=~_|!:,.;]* # Valid URL characters (any number of times)
-      [\-A-Z0-9+\u0026@#/%=~_|] # String must end in a valid URL character
-    )
-  ///gi
-
-  return @replace(pattern, "$1<a href='$2'>$2</a>") unless options.length > 0
-
-  option = options[0]
-  linkAttributes = (
-    " #{k}='#{v}'" for k, v of option when k isnt 'callback'
-  ).join('')
-
-  @replace pattern, (match, space, url) ->
-    link = option.callback?(url) or
-      "<a href='#{url}'#{linkAttributes}>#{url}</a>"
-
-    "#{space}#{link}"
-
-String::autoLink = autoLink
