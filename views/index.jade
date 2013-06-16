@@ -5,14 +5,16 @@ block content
     tabs(pane-changed="paneChanged(selectedPane)")
       pane(title="Chat")
         .chat
-          h2.tab-pane__title Bienvenue sur CoCity
-          ul
+          ul.channels-list
             li.chan(ng-repeat="chan in channels", ng-class="{'is-active': chan.joined == true}")
               a(href="#" ,ng-click="toggleChannel(chan.name, $event)")
                 span.chan__name # {{chan.name}}
                 span.chan__nb-users
                   i.ss-icon users
                   {{chan.users}}
+                span.chan__nb-pois(ng-if="chan.pois > 0")
+                  i.ss-icon pin
+                  {{chan.pois}}
           ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'-post_date'")
             li.message
               span.message__user
@@ -46,14 +48,4 @@ block content
       pane(title="Maps", ng-click="test()")
         .map
           google-map(center="center", draggable="true", zoom="zoom", markers="markers", refresh="isMapVisible")
-      pane(title="Channels")
-        .channels
-          h2.tab-pane__title Bienvenue sur la liste des channels
-          ul
-            li.chan(ng-repeat="chan in channels", ng-class="{'is-active': chan.joined == true}")
-              a(href="#" ,ng-click="toggleChannel(chan.name, $event)")
-                span.chan__name # {{chan.name}}
-                span.chan__nb-users
-                  i.ss-icon users
-                  {{chan.users}}
 

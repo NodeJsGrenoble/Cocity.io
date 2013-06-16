@@ -74,7 +74,7 @@ body{
     border-right: 1px solid darken($tab-bar-bg, 8%);
 
     @include mq-max-w(600px){
-      width: (100%/3);
+      width: (100%/2);
     }
   }
 
@@ -89,7 +89,7 @@ body{
     text-decoration: none;
 
     @include mq-min-w(600px){
-      padding: 0 1.5em;
+      padding: 0 3em;
     }
 
     &.is-active{
@@ -133,10 +133,6 @@ body{
   margin: 20px auto;
 }
 
-.channels{
-  @extend %tab-pane;
-}
-
 .chat{
   @extend %tab-pane;
   padding-bottom: 100px;
@@ -148,15 +144,31 @@ body{
   margin-bottom: 1.1em;
 }
 
+.channels-list{
+  @include pie-clearfix;
+  margin-bottom: 30px;
+}
+
 .chan{
   float: left;
   margin-right: 1em;
+  margin-bottom: .5em;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #FAFAFA;
+  border: 1px solid #DDD;
+  box-shadow: 0 2px 0 #DDD, 0 3px 0 #CCC;
+
   a{
     text-decoration: none;
     color: $text-color;
     display: inline-block;
-    background: #F2F2F2;
-    border: 1px solid #DDD;
+  }
+
+  &.is-active{
+    background: darken($primary-bg-color, 3%);
+    border: 1px solid darken($primary-bg-color, 6%);
+    box-shadow: 0 2px 0 darken($primary-bg-color,6%), 0 3px 0 darken($primary-bg-color, 8%);
   }
 
   &.is-active a{
@@ -164,23 +176,29 @@ body{
   }
 }
 
-.chan__name, .chan__nb-users{
+.chan__name, .chan__nb-users, .chan__nb-pois{
   display: inline-block;
-  padding: .5em .4em;
+  padding: .5em .6em;
 }
 
 .chan__name{
-  font-weight: 600;
+  font-weight: 300;
   border-right: 1px solid #DDD;
   background: #FFF;
 
   .chan.is-active &{
     background: $primary-bg-color;
+    border-right: 1px solid rgba(255,255,255,.3);
   }
 }
 
-.chan__nb-users{
+.chan__nb-users, .chan__nb-pois{
   color: #888;
+  font-size: 13px;
+
+  .chan.is-active &{
+    color: rgba(255,255,255,1);
+  }
 
   i{
     display: inline-block;
@@ -195,31 +213,38 @@ body{
   background: #FFF;
   padding: .8em 1em;
   margin-bottom: 1em;
-  border: 2px solid #DDD;
+  border: 1px solid #DDD;
   overflow: hidden;
 }
 
 .message__user{
   display: block;
-  font-weight: 600;
+  font-weight: 400;
   margin-bottom: .5em;
+  font-size: 17px;
 }
 
 .message__content{
   color: #666;
+
+  a{
+    color: $primary-bg-color;
+  }
 }
 
-.message__hash{
+a.message__hash{
   display: inline-block;
   color: $text-color;
   padding: .3em .6em;
   background: #FAFAFA;
   border: 1px solid #EEE;
-  margin-left: .4em;
+  margin-left: .6em;
   text-decoration: none;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 #EEE;
 
   &:hover{
-    background: darken(#FAFAFA, 3%);
+    background: darken(#FAFAFA, 2%);
     color: lighten($text-color, 10%);
   }
 }

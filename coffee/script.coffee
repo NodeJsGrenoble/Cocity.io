@@ -100,11 +100,11 @@ angular.module('cocity', ["google-maps"]).
   ).
   filter("matchCurrentChannels", ->
     (messages, current_channels) ->
-      console.log "Filtering", messages, current_channels, arguments 
+      console.log "Filtering", messages, current_channels, arguments
       if current_channels?.length
         _(messages).filter (msg) ->
           _(msg.hashtags).intersection(current_channels).length
-      else 
+      else
         messages
   ).
   controller('AppCtrl', ($scope, $filter, $http, socket, hashchange) ->
@@ -142,8 +142,8 @@ angular.module('cocity', ["google-maps"]).
         $scope.isMapVisible = false
 
       $scope.markers = []
-      
-      console.log "filter?", 
+
+      console.log "filter?",
       _($filter('matchCurrentChannels') $scope.messages, $scope.current_channels)
       .each (message) ->
         if message.poi
@@ -156,7 +156,7 @@ angular.module('cocity', ["google-maps"]).
       console.log "markers", $scope.markers
 
     $scope.poiResults = []
-    $scope.poiMessage = 
+    $scope.poiMessage =
       name: ""
       coord: []
 
@@ -192,6 +192,7 @@ angular.module('cocity', ["google-maps"]).
 
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
+      return unless $scope.message.content
       if not $scope.me.username
         return $scope.usernamePrompt = true
       $scope.usernamePrompt = false
@@ -201,7 +202,7 @@ angular.module('cocity', ["google-maps"]).
         hashtags: $scope.current_channels
         poi: if $scope.poiMessage.name then $scope.poiMessage else null
       $scope.message.content = ""
-      $scope.poiMessage = 
+      $scope.poiMessage =
         name: ""
         coord: []
 

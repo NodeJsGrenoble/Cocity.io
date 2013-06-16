@@ -233,6 +233,9 @@
     };
     $scope.sendMessage = function() {
       console.log("Sending.Message", $scope.message.content);
+      if (!$scope.message.content) {
+        return;
+      }
       if (!$scope.me.username) {
         return $scope.usernamePrompt = true;
       }

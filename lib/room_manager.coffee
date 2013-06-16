@@ -18,7 +18,7 @@ rooms_messages = require "../data/mock.coffee"
       #@session["ID"] = @id
     ###
 
-  ### ROOM ###     
+  ### ROOM ###
 
   @helper emit_to_room: (room, args...) ->
     @socket.broadcast.to(room).emit args...
@@ -33,7 +33,7 @@ rooms_messages = require "../data/mock.coffee"
             deferred.resolve(user)
           deferred.promise
       ).done cb
-    else 
+    else
       cb []
 
   @on list_rooms: ->
@@ -44,10 +44,11 @@ rooms_messages = require "../data/mock.coffee"
     console.log "channels", _(@io.sockets.manager.rooms).chain().keys().map((route) -> route.slice 1).value().concat \
         _(rooms_messages).keys()
 
-    @ack? chans = _(channels).map (channel) => 
+    @ack? chans = _(channels).map (channel) =>
       name: channel
       users: @io.sockets.manager.rooms["/#{channel}"]?.length ? 0
       messages: rooms_messages[channel] ? []
+      pois: 5
     console.log "List rooms", util.inspect(@io.sockets.manager.rooms, colors: on)
     console.log "List chans", util.inspect(chans, colors: on)
 
@@ -56,13 +57,13 @@ rooms_messages = require "../data/mock.coffee"
       console.log "Done setting me"
       @ack?()
 
-  
+
   @on get_posts: ->
     @ack? _(rooms_messages).chain().values().flatten().value()
 
   @on post: ->
     _(@data.hashtags.concat [""]).each (hashtag) =>
-      msg = _(@data).defaults 
+      msg = _(@data).defaults
         id: uuid.v4()
         post_data: (new Date()).getTime()
       console.log "Sending Post to #{hashtag}"
@@ -83,7 +84,7 @@ rooms_messages = require "../data/mock.coffee"
   @on join: ->
     console.log "join", @data, @id
     @socket.get "me", (err, me) =>
-      @emit_to_room @data, "joined", 
+      @emit_to_room @data, "joined",
         room: @data
         id: @id
         user: me
@@ -92,7 +93,7 @@ rooms_messages = require "../data/mock.coffee"
         console.log "Messages for room #{@data}", rooms_messages[@data]
         @ack?(
           name: @data
-          users: users.length 
+          users: users.length
           messages: rooms_messages[@data]
         )
 
@@ -132,7 +133,7 @@ rooms_messages = require "../data/mock.coffee"
     console.log "create", @data, @ack
     @data = uuid() unless @data
     if @io.sockets.clients(@data).length
-      @ack? "taken" 
+      @ack? "taken"
     else
       @join @data
       @ack? null, @data

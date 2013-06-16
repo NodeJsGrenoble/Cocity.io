@@ -18,7 +18,7 @@ require("zappajs") 4500, ->
           "/socket.io/socket.io.js"
           "//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"
           "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"
-          "https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
+          "https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"
           "https://maps.googleapis.com/maps/api/js?sensor=false"
           "/js/angular-google-maps.js"
           "/js/script.js"
