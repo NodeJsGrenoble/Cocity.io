@@ -1,6 +1,11 @@
+### Fastclick for responsive mobile click ###
+window.addEventListener "load", (->
+  FastClick.attach document.body
+), false
+
 ### String HTTP Linker ###
 
-autoLink = (options...) ->
+autoLink = (options..., scope) ->
   pattern = ///
     (^|\s) # Capture the beginning of string or leading whitespace
     (
@@ -18,6 +23,17 @@ autoLink = (options...) ->
   ).join('')
 
   @replace pattern, (match, space, url) ->
+    # First check if the url is not a video/image with embedly
+    embedlyKey = "ad06c0ad1988423bb73edd6763020a90"
+
+    embedlyCall = "http://api.embed.ly/1/oembed?key=#{embedlyKey}&url=#{url}&maxwidth=500"
+
+    $.ajax(embedlyCall).
+      done((data) ->
+        if data.type is "photo"
+          scope.message.rich = "<img src='#{data.url}'/>"
+      )
+
     link = option.callback?(url) or
       "<a href='#{url}'#{linkAttributes}>#{url}</a>"
 
@@ -139,13 +155,21 @@ angular.module('cocity', ["google-maps"]).
 
     # Map Refresh
     $scope.isMapVisible = false
-    
+
+    ### Mediau queries ###
+    setTimeout ( ->
+      $scope.$apply ->
+        mq = window.matchMedia("(min-width: 1280px)")
+        if (mq.matches)
+          $scope.isMapVisible = true
+    ), 1000
+
     colorMarker = (chan) ->
       pos = _($scope.channels).map((channel) ->
           channel.name
         ).indexOf chan
       Math.round((19 / $scope.channels.length) * pos + 1)
-    
+
     $scope.paneChanged = (selectedPane) ->
 
       if selectedPane.title is "Maps"
@@ -190,9 +214,9 @@ angular.module('cocity', ["google-maps"]).
       $("#local_search").val("")
       $scope.togglePoiShow()
 
-    $scope.togglePoiShow = ->  
+    $scope.togglePoiShow = ->
       $scope.poiShow = !$scope.poiShow
-      if $scope.poiShow 
+      if $scope.poiShow
         $("#local_search").focus()
 
     $scope.toggleChannel = (channel, event) ->
@@ -216,19 +240,19 @@ angular.module('cocity', ["google-maps"]).
 
     extractHashtags = (text) ->
       _(text.match(/#(\w+)/g)).map (ht) -> ht.slice(1)
-    
+
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
       return unless $scope.message.content
       if not $scope.me.username
-        setTimeout -> 
+        setTimeout ->
           $("#pseudoprompt").focus()
         return $scope.usernamePrompt = true
       $scope.usernamePrompt = false
       socket.emit "post",
         author: $scope.me.username
         content: $scope.message.content
-        hashtags: extractHashtags $scope.message.content 
+        hashtags: extractHashtags $scope.message.content
         poi: if $scope.poiMessage.name then $scope.poiMessage else null
       $scope.message.content = ""
       $scope.poiMessage =
@@ -241,7 +265,7 @@ angular.module('cocity', ["google-maps"]).
         $scope.channels.push room
 
     add_or_not_message = (msg) ->
-      msg.content = msg.content?.autoLink(target: "_blank")
+      msg.content = msg.content?.autoLink(target: "_blank", $scope)
       unless _($scope.messages).find((message) -> message.id is msg.id)
         $scope.messages.push msg
 
