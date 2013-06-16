@@ -15,7 +15,7 @@ block content
                 span.chan__nb-pois(ng-if="chan.stats.pois > 0")
                   i.ss-icon pin
                   {{chan.stats.pois}}
-          ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'-post_date'")
+          ul(ng-repeat="message in messages | matchCurrentChannels:current_channels | orderBy:'post_date'")
             li.message
               span.message__user
                 {{message.author}}
