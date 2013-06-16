@@ -1,3 +1,5 @@
+uuid = require "uuid"
+
 @include = ->
 
   @on "connection": ->
@@ -44,6 +46,15 @@
       console.log "Done setting me"
       @ack?()
 
+  
+  @on post: ->
+    _(@data.hashtags.concat [""]).each (hashtag) =>
+      console.log "Sending Post to #{hashtag}"
+      @broadcast_to hashtag, "post",
+        _(@data).defaults
+          id: uuid.v4()
+
+
   # One2One for WebRTC Nego
   @on message: ->
     console.log "message from", @id, @data
@@ -62,6 +73,7 @@
         user: me
 
       @get_room_users @data, (users) =>
+        console.log "ack get_room_users", users, @ack
         @ack? users
 
         @join @data

@@ -91,24 +91,42 @@
       }
     };
   }).controller('AppCtrl', function($scope, socket, hashchange) {
-    var add_or_update_channel, first_connection, update_channel_state;
+    var add_or_not_message, add_or_update_channel, first_connection, update_channel_state;
 
     window.scope = $scope;
     first_connection = true;
     $scope.channels = [];
     $scope.current_channels = [];
+    $scope.messages = [];
+    $scope.message = {
+      content: "Enter your message here"
+    };
+    $scope.me = {
+      username: "Anon" + (Math.round(Math.random() * 90000) + 10000),
+      avatar: "",
+      userAgent: navigator.userAgent
+    };
     $scope.$watch("channels", function(n, o) {
       return console.log("channels, n", n, "o", o);
     }, true);
+    $scope.sendMessage = function() {
+      console.log("Sending.Message", $scope.message.content);
+      return socket.emit("post", {
+        author: $scope.me.username,
+        content: $scope.message.content,
+        hashtags: $scope.current_channels
+      });
+    };
     add_or_update_channel = function(room) {
-      var chan;
-
-      if (chan = _($scope.channels).find(function(chan) {
-        return chan.name === room.name;
-      })) {
-        return chan.users = room.users;
-      } else {
+      if (!update_channel_state(room.name, room)) {
         return $scope.channels.push(room);
+      }
+    };
+    add_or_not_message = function(msg) {
+      if (!_($scope.messages).find(function(message) {
+        return message.id === msg.id;
+      })) {
+        return $scope.messages.push(msg);
       }
     };
     update_channel_state = function(name, state) {
@@ -117,12 +135,16 @@
       if (chan = _($scope.channels).find(function(chan) {
         return chan.name === name;
       })) {
+        console.log("Found channel " + name);
         _results = [];
         for (k in state) {
           v = state[k];
+          console.log("Updating channel " + name + "." + k + " = " + v);
           _results.push(chan[k] = v);
         }
         return _results;
+      } else {
+        return console.log("Not found channel " + name);
       }
     };
     socket.on("connect", function() {
@@ -130,35 +152,29 @@
         _this = this;
 
       $scope.$watch("current_channels", function(new_arr, old_arr) {
-        var chan, _i, _j, _len, _len1, _ref, _ref1, _results;
-
         console.log("currents_channels", new_arr, old_arr);
         if (new_arr === old_arr) {
           old_arr = [];
         }
-        _ref = _(new_arr).difference(old_arr);
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          chan = _ref[_i];
+        _(new_arr).difference(old_arr).forEach(function(chan) {
           console.log("Joining " + chan);
-          socket.emit("join", chan, function(users) {
-            console.log("Users in " + chan, users.length);
-            return update_channel_state(chan, {
+          return socket.emit("join", chan, function(users) {
+            console.log("Joined " + chan + ", Users", users.length);
+            return add_or_update_channel({
+              name: chan,
+              users: users.length,
               joined: true
             });
           });
-        }
+        });
         console.log("leave", _(old_arr).difference(new_arr));
-        _ref1 = _(old_arr).difference(new_arr);
-        _results = [];
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          chan = _ref1[_j];
+        return _(old_arr).difference(new_arr).forEach(function(chan) {
           console.log("Leaving " + chan);
           socket.emit("leave", chan);
-          _results.push(update_channel_state(chan, {
+          return update_channel_state(chan, {
             joined: false
-          }));
-        }
-        return _results;
+          });
+        });
       }, true);
       hashchange.on(current_channel = function(hash) {
         console.log("new hash", (hash != null ? hash : window.location.hash).split(/\#/).slice(1));
@@ -169,11 +185,7 @@
         window.location.reload();
       }
       first_connection = false;
-      return socket.emit("me", {
-        username: "Anon" + (Math.round(Math.random() * 90000) + 10000),
-        avatar: "",
-        userAgent: navigator.userAgent
-      }, function() {
+      return socket.emit("me", $scope.me, function() {
         return socket.emit("list_rooms", function(rooms) {
           var room, _i, _len, _results;
 
@@ -206,7 +218,13 @@
       });
     }
     $scope.markers = [];
-    return $scope.zoom = 6;
+    $scope.zoom = 6;
+    return socket.on("post", function(post) {
+      console.log("post", post);
+      if ((_(post.hashtags).intersection($scope.current_channels).length > 0) || ($scope.current_channels.length === 0)) {
+        return add_or_not_message(post);
+      }
+    });
   });
 
 }).call(this);
