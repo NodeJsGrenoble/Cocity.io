@@ -99,10 +99,10 @@
     $scope.current_channels = [];
     $scope.messages = [];
     $scope.message = {
-      content: "Enter your message here"
+      content: ""
     };
     $scope.me = {
-      username: "Anon" + (Math.round(Math.random() * 90000) + 10000),
+      username: "",
       avatar: "",
       userAgent: navigator.userAgent
     };
@@ -124,11 +124,16 @@
     };
     $scope.sendMessage = function() {
       console.log("Sending.Message", $scope.message.content);
-      return socket.emit("post", {
+      if (!$scope.me.username) {
+        return $scope.usernamePrompt = true;
+      }
+      $scope.usernamePrompt = false;
+      socket.emit("post", {
         author: $scope.me.username,
         content: $scope.message.content,
         hashtags: $scope.current_channels
       });
+      return $scope.message.content = "";
     };
     add_or_update_channel = function(room) {
       if (!update_channel_state(room.name, room)) {
@@ -241,6 +246,30 @@
         return add_or_not_message(post);
       }
     });
+  }).directive('enterSubmit', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        var submit;
+
+        submit = false;
+        return $(element).on({
+          keydown: function(e) {
+            submit = false;
+            if (e.which === 13 && !e.shiftKey) {
+              submit = true;
+              return e.preventDefault();
+            }
+          },
+          keyup: function() {
+            if (submit) {
+              scope.$eval(attrs.enterSubmit);
+              return scope.$digest();
+            }
+          }
+        });
+      }
+    };
   });
 
 }).call(this);

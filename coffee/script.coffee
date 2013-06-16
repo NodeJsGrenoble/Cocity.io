@@ -77,10 +77,10 @@ angular.module('cocity', ["google-maps"]).
     $scope.current_channels = []
     $scope.messages = []
     $scope.message =
-      content: "Enter your message here"
+      content: ""
 
     $scope.me =
-      username: "Anon" + (Math.round(Math.random() * 90000) + 10000)
+      username: ""
       avatar: ""
       userAgent: navigator.userAgent
 
@@ -103,10 +103,15 @@ angular.module('cocity', ["google-maps"]).
 
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
+      if not $scope.me.username
+        return $scope.usernamePrompt = true
+      $scope.usernamePrompt = false
       socket.emit "post",
         author: $scope.me.username
         content: $scope.message.content
         hashtags: $scope.current_channels
+      $scope.message.content = ""
+
 
     add_or_update_channel = (room) ->
       unless update_channel_state room.name, room
@@ -200,4 +205,27 @@ angular.module('cocity', ["google-maps"]).
       if (_(post.hashtags).intersection($scope.current_channels).length > 0) or
         ($scope.current_channels.length is 0)
           add_or_not_message post
+  ).
+  directive('enterSubmit', ->
+    {
+      restrict: 'A'
+      link: (scope, element, attrs) ->
+        submit = false
+
+        $(element).on({
+          keydown: (e) ->
+            submit = false
+
+            if (e.which is 13 && !e.shiftKey)
+              submit = true
+              e.preventDefault()
+
+          keyup: () ->
+            if submit
+              scope.$eval( attrs.enterSubmit )
+
+              # flush model changes manually
+              scope.$digest()
+        })
+    }
   )
