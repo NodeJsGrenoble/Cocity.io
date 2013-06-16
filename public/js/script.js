@@ -109,6 +109,19 @@
     $scope.$watch("channels", function(n, o) {
       return console.log("channels, n", n, "o", o);
     }, true);
+    $scope.toggleChannel = function(channel, event) {
+      var removed;
+
+      removed = false;
+      $scope.current_channels = _($scope.current_channels).reject(function(chan) {
+        return chan === channel && (removed = true);
+      });
+      if (!removed) {
+        $scope.current_channels.push(channel);
+      }
+      console.log("toggleChannel", arguments, event);
+      return event.preventDefault();
+    };
     $scope.sendMessage = function() {
       console.log("Sending.Message", $scope.message.content);
       if (!$scope.me.username) {
@@ -157,6 +170,7 @@
         _this = this;
 
       $scope.$watch("current_channels", function(new_arr, old_arr) {
+        window.location.hash = "#" + new_arr.join("#");
         console.log("currents_channels", new_arr, old_arr);
         if (new_arr === old_arr) {
           old_arr = [];
@@ -182,8 +196,12 @@
         });
       }, true);
       hashchange.on(current_channel = function(hash) {
-        console.log("new hash", (hash != null ? hash : window.location.hash).split(/\#/).slice(1));
-        return $scope.current_channels = (hash != null ? hash : window.location.hash).split(/\#/).slice(1);
+        var cur_hash_chans;
+
+        cur_hash_chans = (hash != null ? hash : window.location.hash).split(/\#/).slice(1);
+        if (!_($scope.current_channels).isEqual(cur_hash_chans)) {
+          return $scope.current_channels = (hash != null ? hash : window.location.hash).split(/\#/).slice(1);
+        }
       });
       current_channel();
       if (!first_connection) {
@@ -209,8 +227,8 @@
       return add_or_update_channel(room);
     });
     $scope.center = {
-      latitude: 40.705578,
-      longitude: -73.978004
+      latitude: 45.1911576,
+      longitude: 5.7186758
     };
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {

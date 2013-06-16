@@ -12,8 +12,9 @@ block content
                 {{message.author}}
               p.message__content
                 {{message.content}}
-                a(href="#", class="message__hash", ng-repeat='hash in message.hashtags')
-                  # {{ hash }}
+                a(href="#", class="message__hash", 
+                  ng-repeat='hash in message.hashtags', ng-click="toggleChannel(hash, $event)")
+                    # {{ hash }}
         form.post(ng-submit="sendMessage()")
           .poi-search(ng-class="{'is-hidden': !poiShow}")
             input(type="text", class="poi-search__input", placeholder="Recherche ton point d'interet…")
@@ -39,7 +40,7 @@ block content
           h2.tab-pane__title Bienvenue sur la liste des channels
           ul
             li.chan(ng-repeat="chan in channels", ng-class="{'is-active': chan.joined == true}")
-              a(href="#")
+              a(href="#" ,ng-click="toggleChannel(chan.name, $event)")
                 span.chan__name # {{chan.name}}
                 span.chan__nb-users
                   i.ss-icon users
