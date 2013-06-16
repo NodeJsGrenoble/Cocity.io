@@ -12,11 +12,12 @@ block content
                 {{message.author}}
               p.message__content
                 span(ng-bind-html-unsafe="message.content")
-                a(href="#", class="message__hash", 
+                a(href="#", class="message__hash",
                   ng-repeat='hash in message.hashtags', ng-click="toggleChannel(hash, $event)")
                     # {{ hash }}
         form.post(ng-submit="sendMessage()")
           .poi-search(ng-class="{'is-hidden': !poiShow}")
+            i.ss-icon search
             input(type="text", class="poi-search__input", placeholder="Recherche ton point d'interet…", ng-model="poiSearch", ng-change="typeahead(poiSearch)")
             ul.poi-search__results
               li(ng-repeat="result in poiResults")
