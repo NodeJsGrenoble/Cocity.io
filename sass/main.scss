@@ -223,7 +223,7 @@ body{
 }
 
 $post-bg-color: #FFF;
-
+$poi-search-bg: #2ecc71;
 .post{
   height: 8%;
   min-height: 50px;
@@ -232,8 +232,63 @@ $post-bg-color: #FFF;
   background: $post-bg-color;
   border-top: 1px solid darken($post-bg-color, 5%);
   width: 100%;
-  overflow: hidden;
 }
+
+.poi-search{
+  z-index: 3;
+  position: absolute;
+  height: 120px;
+  width: 300px;
+  top: -115px;
+  background: #FFF;
+  right: 20px;
+  box-shadow: 0 0 3px rgba(0,0,0,.3);
+  opacity: 1;
+  @include transition(top .2s ease-out);
+
+  &.is-hidden{
+    top: 0px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:before, &:after{
+    content: "";
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    bottom: -16px;
+    left: 52%;
+    background: transparent;
+    border: 8px solid transparent;
+    border-top-color: #DDD;
+  }
+
+  &:after{
+    bottom: -15px;
+    border-top-color: #FFF;
+  }
+}
+
+.poi-search__input{
+  border: none;
+  padding: .6em 1em;
+  font-size: 13px;
+  color: #FFF;
+  height: 40px;
+  background: $poi-search-bg;
+  width: 100%;
+
+  &:focus{
+    outline: none;
+    box-shadow: inset 0 0 2px rgba(0,0,0,.3);
+  }
+
+  @include input-placeholder{
+    color: rgba(255,255,255,.8);
+  }
+}
+
 
 .post__message{
   position: relative;
@@ -262,7 +317,7 @@ $post-bg-color: #FFF;
     position: absolute;
     right: 18px;
     top: 50%;
-    margin-top: -12px;
+    margin-top: -14px;
     cursor: pointer;
     opacity: .6;
 
@@ -323,5 +378,4 @@ $post-bg-color: #FFF;
   display: block;
   height: 100%;
   width: 100%;
-  position: static;
 }
