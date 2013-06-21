@@ -154,14 +154,21 @@ angular.module('cocity', ["google-maps"]).
     $scope.poiShow = false
 
     # Map Refresh
-    $scope.isMapVisible = false
 
-    ### Mediau queries ###
+    $scope.isMapVisible = (change_state) ->
+      if not $scope._isMapVisible and change_state
+        $scope.refreshMarkers()      
+      $scope._isMapVisible = change_state ? $scope._isMapVisible
+
+    $scope.isMapVisible false
+
+    ### Media queries ###
     setTimeout ( ->
       $scope.$apply ->
         mq = window.matchMedia("(min-width: 1280px)")
         if (mq.matches)
-          $scope.isMapVisible = true
+          console.log "MQ Wide Matching"
+          $scope.isMapVisible true
     ), 1000
 
     colorMarker = (chan) ->
@@ -173,13 +180,19 @@ angular.module('cocity', ["google-maps"]).
     $scope.paneChanged = (selectedPane) ->
 
       if selectedPane.title is "Maps"
-        $scope.isMapVisible = true
+        $scope.isMapVisible true
       else
-        $scope.isMapVisible = false
+        $scope.isMapVisible false
 
+
+    $scope.poiResults = []
+    $scope.poiMessage =
+      name: ""
+      coord: []
+
+    $scope.refreshMarkers = ->
       $scope.markers = []
 
-      console.log "filter?",
       _($filter('matchCurrentChannels') $scope.messages, $scope.current_channels)
       .each (message) ->
         if message.poi
@@ -188,13 +201,7 @@ angular.module('cocity', ["google-maps"]).
             longitude: message.poi.coord[1]
             infoWindow: message.poi.name
             icon: "/img/pins/pin-#{colorMarker message.hashtags[0]}.png"
-          )
-      console.log "markers", $scope.markers
-
-    $scope.poiResults = []
-    $scope.poiMessage =
-      name: ""
-      coord: []
+          )      
 
     $scope.typeahead = (search)->
       if search.length > 2
@@ -228,6 +235,8 @@ angular.module('cocity', ["google-maps"]).
       unless removed
         $scope.current_channels.push channel
 
+      if $scope.isMapVisible()
+        $scope.refreshMarkers()
 
       console.log "toggleChannel", arguments, event
       event.preventDefault()

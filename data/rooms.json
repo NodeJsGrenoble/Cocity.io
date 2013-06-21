@@ -32,6 +32,33 @@
             "hashtags": [
                 "cowork"
             ]
+        },
+        {
+            "author": "Sniper",
+            "content": "#cowork  je laisse un méssage",
+            "hashtags": [
+                "cowork"
+            ],
+            "poi": {
+                "name": "Barberousse",
+                "coord": [
+                    45.192217581369185,
+                    5.731300041109281
+                ]
+            },
+            "id": "8caec699-b8f8-40d9-b9ef-7b6e1ec5057e",
+            "post_data": 1371389876872
+        },
+        {
+            "author": "Test",
+            "content": "#cowork #Football un match de coworkeur ?",
+            "hashtags": [
+                "cowork",
+                "Football"
+            ],
+            "poi": null,
+            "id": "31ceb188-18f1-494d-ac29-22cccf9cf5e1",
+            "post_data": 1371389971295
         }
     ],
     "bar": [
@@ -119,6 +146,19 @@
             },
             "id": "4a7f19f3-cf62-4acb-8d61-0c3bd1b83bec",
             "post_data": 1371376553715
+        }
+    ],
+    "Football": [
+        {
+            "author": "Test",
+            "content": "#cowork #Football un match de coworkeur ?",
+            "hashtags": [
+                "cowork",
+                "Football"
+            ],
+            "poi": null,
+            "id": "31ceb188-18f1-494d-ac29-22cccf9cf5e1",
+            "post_data": 1371389971295
         }
     ]
 }

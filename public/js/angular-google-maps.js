@@ -475,6 +475,7 @@
         
         var markerWatcher = function() {
           // Markers
+          console.log("Setup watcher on markers");
           scope.$watch("markers", function (newValue, oldValue) {
             console.log("markers", newValue, oldValue);
             $timeout(function () {

@@ -191,8 +191,14 @@
       return console.log("channels, n", n, "o", o);
     }, true);
     $scope.poiShow = false;
-    $scope.isMapVisible = false;
-    /* Mediau queries
+    $scope.isMapVisible = function(change_state) {
+      if (!$scope._isMapVisible && change_state) {
+        $scope.refreshMarkers();
+      }
+      return $scope._isMapVisible = change_state != null ? change_state : $scope._isMapVisible;
+    };
+    $scope.isMapVisible(false);
+    /* Media queries
     */
 
     setTimeout((function() {
@@ -201,7 +207,8 @@
 
         mq = window.matchMedia("(min-width: 1280px)");
         if (mq.matches) {
-          return $scope.isMapVisible = true;
+          console.log("MQ Wide Matching");
+          return $scope.isMapVisible(true);
         }
       });
     }), 1000);
@@ -215,12 +222,19 @@
     };
     $scope.paneChanged = function(selectedPane) {
       if (selectedPane.title === "Maps") {
-        $scope.isMapVisible = true;
+        return $scope.isMapVisible(true);
       } else {
-        $scope.isMapVisible = false;
+        return $scope.isMapVisible(false);
       }
+    };
+    $scope.poiResults = [];
+    $scope.poiMessage = {
+      name: "",
+      coord: []
+    };
+    $scope.refreshMarkers = function() {
       $scope.markers = [];
-      console.log("filter?", _($filter('matchCurrentChannels')($scope.messages, $scope.current_channels)).each(function(message) {
+      return _($filter('matchCurrentChannels')($scope.messages, $scope.current_channels)).each(function(message) {
         if (message.poi) {
           return $scope.markers.push({
             latitude: message.poi.coord[0],
@@ -229,13 +243,7 @@
             icon: "/img/pins/pin-" + (colorMarker(message.hashtags[0])) + ".png"
           });
         }
-      }));
-      return console.log("markers", $scope.markers);
-    };
-    $scope.poiResults = [];
-    $scope.poiMessage = {
-      name: "",
-      coord: []
+      });
     };
     $scope.typeahead = function(search) {
       if (search.length > 2) {
@@ -274,6 +282,9 @@
       });
       if (!removed) {
         $scope.current_channels.push(channel);
+      }
+      if ($scope.isMapVisible()) {
+        $scope.refreshMarkers();
       }
       console.log("toggleChannel", arguments, event);
       return event.preventDefault();
