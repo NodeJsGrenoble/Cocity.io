@@ -575,3 +575,28 @@ $poi-search-bg: #2ecc71;
   color: $primary-text-color;
   cursor: pointer;
 }
+
+.messages {
+  overflow: hidden;
+  max-height: 150px;
+}
+
+.slide-enter, .slide-leave { 
+  -webkit-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  -moz-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  -ms-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  -o-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+}
+
+.slide-leave, .slide-enter.slide-enter-active {
+  max-height: 150px;
+  opacity: 1;
+}
+
+.slide-enter, .slide-leave.slide-leave-active {
+  opacity: 0;
+  max-height: 0px;
+}
+
+
