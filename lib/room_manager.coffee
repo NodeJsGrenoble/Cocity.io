@@ -60,7 +60,7 @@ rooms_messages = JSON.parse(fs.readFileSync "./data/rooms.json")
 
   @on me: (who)->
     @socket.set "me", who, =>
-      console.log "Done setting me"
+      console.log "Done setting me", who
       @ack?()
 
 
@@ -71,12 +71,13 @@ rooms_messages = JSON.parse(fs.readFileSync "./data/rooms.json")
     _(@data.hashtags.concat [""]).each (hashtag) =>
       msg = _(@data).defaults
         id: uuid.v4()
-        post_data: (new Date()).getTime()
+        post_date: (new Date()).getTime()
       console.log "Sending Post to #{hashtag}"
       if hashtag
         unless rooms_messages[hashtag]
           rooms_messages[hashtag] = []
 
+        #if msg.poi ? for persistency in cache ?
         rooms_messages[hashtag].push msg
         @broadcast_to "", "room_update", @chan_infos hashtag
 
