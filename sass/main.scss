@@ -49,8 +49,19 @@ a{
   img{
     display: inline-block;
     margin: 8px 0;
+    vertical-align:text-top;
   }
 }
+
+#city {
+  color: rgb(6, 180, 151);
+  font-size: 26px;
+  display: inline-block;
+  margin-top: 16px;
+  vertical-align: top;
+  margin-left: 10px;
+}
+
 
 .ss-icon{
   font-family: 'SS Standard';
@@ -253,6 +264,20 @@ a{
   font-size: 12px;
   right: 10px;
   top: 5px;
+  display: inline-block;
+  color: #AAA;
+
+  i{
+    display: inline-block;
+    margin-right: 4px;
+  }
+}
+
+.timeago{
+  position: absolute;
+  font-size: 12px;
+  right: 10px;
+  bottom: 5px;
   display: inline-block;
   color: #AAA;
 

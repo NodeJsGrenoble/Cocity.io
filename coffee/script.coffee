@@ -44,7 +44,7 @@ String::autoLink = autoLink
 
 ### Angular App ###
 
-angular.module('cocity', ["google-maps"]).
+angular.module('cocity', ["google-maps", "LocalStorageModule"]).
   directive('tabs', ->
     restrict: 'E'
     transclude: true
@@ -131,7 +131,7 @@ angular.module('cocity', ["google-maps"]).
       else
         messages
   ).
-  controller('AppCtrl', ($scope, $filter, $http, socket, hashchange) ->
+  controller('AppCtrl', ($scope, $filter, $http, socket, hashchange, $timeout, localStorageService) ->
     window.scope = $scope
 
     first_connection = true
@@ -142,10 +142,34 @@ angular.module('cocity', ["google-maps"]).
     $scope.message =
       content: ""
 
-    $scope.me =
+    ###
+    i = 1
+    setInterval ->
+      console.log "Interval ding dong"
+      $scope.messages.push 
+        id: i
+        author: "test"
+        content: "test #{i++}" 
+        hashtags: []
+        poi: null
+        post_date: (new Date()).getTime()
+      $scope.$digest()
+
+    , 1500
+    ###
+
+    $scope.me = JSON.parse(localStorageService.get("me")) ?
       username: ""
       avatar: ""
       userAgent: navigator.userAgent
+
+    $scope.$watch "me", (n,o) ->
+      unless _(n).isEqual o
+        socket.emit "me", $scope.me, =>
+          console.log "Sending me", $scope.me
+        localStorageService.add "me", JSON.stringify($scope.me)
+
+    , true
 
     $scope.$watch "channels", (n,o) ->
       console.log "channels, n", n, "o", o
@@ -163,13 +187,13 @@ angular.module('cocity', ["google-maps"]).
     $scope.isMapVisible false
 
     ### Media queries ###
-    setTimeout ( ->
+    $timeout ->
       $scope.$apply ->
         mq = window.matchMedia("(min-width: 1280px)")
         if (mq.matches)
           console.log "MQ Wide Matching"
           $scope.isMapVisible true
-    ), 1000
+    , 1000
 
     colorMarker = (chan) ->
       pos = _($scope.channels).map((channel) ->
@@ -248,7 +272,7 @@ angular.module('cocity', ["google-maps"]).
         ).join(" ") + " "
 
     extractHashtags = (text) ->
-      _(text.match(/#(\w+)/g)).map (ht) -> ht.slice(1)
+      _(text.match(/#([\w-_]+)/g)).map (ht) -> ht.slice(1)
 
     $scope.sendMessage = ->
       console.log "Sending.Message", $scope.message.content
@@ -336,35 +360,42 @@ angular.module('cocity', ["google-maps"]).
       unless first_connection
         window.location.reload()
       first_connection = false
-      # Who am I ?
-      socket.emit "me", $scope.me, =>
-        # List Rooms
-        socket.emit "list_rooms", (rooms) ->
-          console.log "list_rooms", rooms
-          for room in rooms
-            add_or_update_channel room if room.name
 
+
+      # List Rooms
+      socket.emit "list_rooms", (rooms) ->
+
+        console.log "list_rooms", rooms
+        for room in rooms
+          add_or_update_channel room if room.name
+
+    
     socket.on "room_update", (room) ->
       console.log "room_update", room
       add_or_update_channel room
 
     # Google Maps
     $scope.zoom = 13
-    $scope.center = {
-      latitude: 45.1911576 #40.705578
-      longitude: 5.7186758 #-73.978004
-    }
+    $scope.center = 
+      latitude: cocity.geo.location.latitude
+      longitude: cocity.geo.location.longitude
+    $scope.selected = _($scope.center).clone()
+
 
     if navigator.geolocation
       navigator.geolocation.getCurrentPosition((position) ->
-        console.log position
-        ###
         $scope.$apply ->
-          $scope.center = {
-            latitude: position.coords.latitude
-            longitude: position.coords.longitude
-          }
-        ###
+          console.log position
+          # Updating Me
+          $scope.me.location = 
+            lat: position.coords.latitude
+            lng: position.coords.longitude
+          ###
+            $scope.center = {
+              latitude: position.coords.latitude
+              longitude: position.coords.longitude
+            }
+          ###
       )
 
     $scope.markers = []
@@ -397,5 +428,16 @@ angular.module('cocity', ["google-maps"]).
               scope.$digest()
         })
     }
+  ).
+  directive('timeago', ($timeout) ->
+    restrict: 'A'
+    link: (scope, elem, attrs) ->
+      updateTime = ->
+        console.log "updateTime", attrs, attrs.timeago
+        if attrs.timeago
+          time = scope.$eval(attrs.timeago)
+          elem.text(jQuery.timeago(time))
+          $timeout(updateTime, 15000)
+      scope.$watch(attrs.timeago, updateTime);
   )
 

@@ -57,7 +57,7 @@
   */
 
 
-  angular.module('cocity', ["google-maps"]).directive('tabs', function() {
+  angular.module('cocity', ["google-maps", "LocalStorageModule"]).directive('tabs', function() {
     return {
       restrict: 'E',
       transclude: true,
@@ -171,8 +171,8 @@
         return messages;
       }
     };
-  }).controller('AppCtrl', function($scope, $filter, $http, socket, hashchange) {
-    var add_or_not_message, add_or_update_channel, colorMarker, extractHashtags, first_connection, update_channel_state;
+  }).controller('AppCtrl', function($scope, $filter, $http, socket, hashchange, $timeout, localStorageService) {
+    var add_or_not_message, add_or_update_channel, colorMarker, extractHashtags, first_connection, update_channel_state, _ref;
 
     window.scope = $scope;
     first_connection = true;
@@ -182,11 +182,37 @@
     $scope.message = {
       content: ""
     };
-    $scope.me = {
+    /*
+    i = 1
+    setInterval ->
+      console.log "Interval ding dong"
+      $scope.messages.push 
+        id: i
+        author: "test"
+        content: "test #{i++}" 
+        hashtags: []
+        poi: null
+        post_date: (new Date()).getTime()
+      $scope.$digest()
+    
+    , 1500
+    */
+
+    $scope.me = (_ref = JSON.parse(localStorageService.get("me"))) != null ? _ref : {
       username: "",
       avatar: "",
       userAgent: navigator.userAgent
     };
+    $scope.$watch("me", function(n, o) {
+      var _this = this;
+
+      if (!_(n).isEqual(o)) {
+        socket.emit("me", $scope.me, function() {
+          return console.log("Sending me", $scope.me);
+        });
+        return localStorageService.add("me", JSON.stringify($scope.me));
+      }
+    }, true);
     $scope.$watch("channels", function(n, o) {
       return console.log("channels, n", n, "o", o);
     }, true);
@@ -201,7 +227,7 @@
     /* Media queries
     */
 
-    setTimeout((function() {
+    $timeout(function() {
       return $scope.$apply(function() {
         var mq;
 
@@ -211,7 +237,7 @@
           return $scope.isMapVisible(true);
         }
       });
-    }), 1000);
+    }, 1000);
     colorMarker = function(chan) {
       var pos;
 
@@ -297,7 +323,7 @@
       });
     };
     extractHashtags = function(text) {
-      return _(text.match(/#(\w+)/g)).map(function(ht) {
+      return _(text.match(/#([\w-_]+)/g)).map(function(ht) {
         return ht.slice(1);
       });
     };
@@ -331,9 +357,9 @@
       }
     };
     add_or_not_message = function(msg) {
-      var _ref;
+      var _ref1;
 
-      msg.content = (_ref = msg.content) != null ? _ref.autoLink({
+      msg.content = (_ref1 = msg.content) != null ? _ref1.autoLink({
         target: "_blank"
       }, $scope) : void 0;
       if (!_($scope.messages).find(function(message) {
@@ -361,11 +387,10 @@
       }
     };
     socket.on("connect", function() {
-      var current_channel,
-        _this = this;
+      var current_channel;
 
       $scope.$watch("current_channels", function(new_arr, old_arr) {
-        var _ref, _ref1;
+        var _ref1, _ref2;
 
         window.location.hash = "#" + new_arr.join("#");
         console.log("currents_channels", new_arr, old_arr);
@@ -391,7 +416,7 @@
             joined: false
           });
         });
-        if (!((_ref = $scope.current_channels) != null ? _ref.length : void 0) && !((_ref1 = $scope.messages) != null ? _ref1.length : void 0)) {
+        if (!((_ref1 = $scope.current_channels) != null ? _ref1.length : void 0) && !((_ref2 = $scope.messages) != null ? _ref2.length : void 0)) {
           return socket.emit("get_posts", function(msgs) {
             console.log("get_posts", msgs);
             return _(msgs).each(function(msg) {
@@ -413,22 +438,20 @@
         window.location.reload();
       }
       first_connection = false;
-      return socket.emit("me", $scope.me, function() {
-        return socket.emit("list_rooms", function(rooms) {
-          var room, _i, _len, _results;
+      return socket.emit("list_rooms", function(rooms) {
+        var room, _i, _len, _results;
 
-          console.log("list_rooms", rooms);
-          _results = [];
-          for (_i = 0, _len = rooms.length; _i < _len; _i++) {
-            room = rooms[_i];
-            if (room.name) {
-              _results.push(add_or_update_channel(room));
-            } else {
-              _results.push(void 0);
-            }
+        console.log("list_rooms", rooms);
+        _results = [];
+        for (_i = 0, _len = rooms.length; _i < _len; _i++) {
+          room = rooms[_i];
+          if (room.name) {
+            _results.push(add_or_update_channel(room));
+          } else {
+            _results.push(void 0);
           }
-          return _results;
-        });
+        }
+        return _results;
       });
     });
     socket.on("room_update", function(room) {
@@ -437,20 +460,26 @@
     });
     $scope.zoom = 13;
     $scope.center = {
-      latitude: 45.1911576,
-      longitude: 5.7186758
+      latitude: cocity.geo.location.latitude,
+      longitude: cocity.geo.location.longitude
     };
+    $scope.selected = _($scope.center).clone();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
-        return console.log(position);
-        /*
-        $scope.$apply ->
-          $scope.center = {
-            latitude: position.coords.latitude
-            longitude: position.coords.longitude
-          }
-        */
+        return $scope.$apply(function() {
+          console.log(position);
+          return $scope.me.location = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          /*
+            $scope.center = {
+              latitude: position.coords.latitude
+              longitude: position.coords.longitude
+            }
+          */
 
+        });
       });
     }
     $scope.markers = [];
@@ -482,6 +511,25 @@
             }
           }
         });
+      }
+    };
+  }).directive('timeago', function($timeout) {
+    return {
+      restrict: 'A',
+      link: function(scope, elem, attrs) {
+        var updateTime;
+
+        updateTime = function() {
+          var time;
+
+          console.log("updateTime", attrs, attrs.timeago);
+          if (attrs.timeago) {
+            time = scope.$eval(attrs.timeago);
+            elem.text(jQuery.timeago(time));
+            return $timeout(updateTime, 15000);
+          }
+        };
+        return scope.$watch(attrs.timeago, updateTime);
       }
     };
   });

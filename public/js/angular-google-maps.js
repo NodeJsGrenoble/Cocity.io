@@ -442,6 +442,8 @@
                 scope.markers.push(cm);
               }
               else {
+                if (scope.markers.indexOf(cm) === -1)
+                  scope.markers.push(cm);   
                 cm.latitude = e.latLng.lat();
                 cm.longitude = e.latLng.lng();
               }
@@ -475,9 +477,7 @@
         
         var markerWatcher = function() {
           // Markers
-          console.log("Setup watcher on markers");
           scope.$watch("markers", function (newValue, oldValue) {
-            console.log("markers", newValue, oldValue);
             $timeout(function () {
               
               angular.forEach(newValue, function (v, i) {
