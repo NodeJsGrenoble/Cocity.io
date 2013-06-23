@@ -142,7 +142,8 @@ a{
 
 %tab-pane{
   width: 90%;
-  margin: 20px auto;
+  height: 90%;
+  margin: 20px auto 0px auto;
 }
 
 .chat{
@@ -494,7 +495,7 @@ $poi-search-bg: #2ecc71;
 //  =======
 .angular-google-map{
   display: block;
-  height: 100%;
+  height: 90%;
   width: 100%;
 }
 
@@ -504,7 +505,7 @@ $poi-search-bg: #2ecc71;
     padding: 0 20px;
     float: left;
     overflow: scroll;
-    height: 100%;
+    //height: 100%;
     padding-bottom: 120px;
   }
 }
@@ -576,7 +577,7 @@ $poi-search-bg: #2ecc71;
   cursor: pointer;
 }
 
-.messages {
+.message-list-item {
   overflow: hidden;
   max-height: 150px;
 }
