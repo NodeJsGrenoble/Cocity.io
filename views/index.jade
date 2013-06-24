@@ -21,7 +21,8 @@ block content
             )
             li.message
               span.message__user
-                {{message.author}}
+                a(ng-href="{{message.author.link}}",target="_blank")
+                  {{message.author.username}}
               p.message__content
                 span(ng-bind-html-unsafe="message.content")
                 a(href="#", class="message__hash",

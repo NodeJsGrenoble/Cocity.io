@@ -2,10 +2,12 @@ uuid = require "uuid"
 util = require "util"
 fs = require "fs"
 
-rooms_messages = JSON.parse(fs.readFileSync "./data/rooms.json")
+rooms_messages = {} #JSON.parse(fs.readFileSync "./data/rooms.json")
 #rooms_messages = require "../data/mock.coffee"
 
 @include = ->
+
+  @store = rooms_messages
 
   @on "connection": ->
     cookie_string = @socket.handshake.headers.cookie
@@ -38,13 +40,30 @@ rooms_messages = JSON.parse(fs.readFileSync "./data/rooms.json")
     else
       cb []
 
-  @helper chan_infos: (channel) ->
+  @helper chan_infos: chan_infos = (channel) =>
     name: channel
     stats:
       users: @io.sockets.manager.rooms["/#{channel}"]?.length ? 0
       messages: rooms_messages[channel] ? []
       pois: _(rooms_messages[channel]).filter((msg) -> msg.poi?.name).length
 
+  @send_post = send_post = (data) ->
+    _(data.hashtags.concat [""]).each (hashtag) =>
+      msg = _(data).defaults
+        id: uuid.v4()
+        post_date: (new Date()).getTime()
+      console.log "Sending Post to #{hashtag}"
+      if hashtag
+        unless rooms_messages[hashtag]
+          rooms_messages[hashtag] = []
+
+        #if msg.poi ? for persistency in cache ?
+        rooms_messages[hashtag].push msg
+        @io.sockets.in("").emit "room_update", chan_infos hashtag
+
+        @io.sockets.in(hashtag).emit "post", msg
+
+  console.log "@send_post?f", send_post?
 
   @on list_rooms: ->
     channels = _(
@@ -68,20 +87,7 @@ rooms_messages = JSON.parse(fs.readFileSync "./data/rooms.json")
     @ack? _(rooms_messages).chain().values().flatten().value()
 
   @on post: ->
-    _(@data.hashtags.concat [""]).each (hashtag) =>
-      msg = _(@data).defaults
-        id: uuid.v4()
-        post_date: (new Date()).getTime()
-      console.log "Sending Post to #{hashtag}"
-      if hashtag
-        unless rooms_messages[hashtag]
-          rooms_messages[hashtag] = []
-
-        #if msg.poi ? for persistency in cache ?
-        rooms_messages[hashtag].push msg
-        @broadcast_to "", "room_update", @chan_infos hashtag
-
-      @broadcast_to hashtag, "post", msg
+    @send_post @data
 
 
   # One2One for WebRTC Nego
@@ -152,4 +158,4 @@ rooms_messages = JSON.parse(fs.readFileSync "./data/rooms.json")
 
 process.on "exit", ->
   console.log "Exited"
-  fs.writeFileSync "./data/rooms.json", JSON.stringify(rooms_messages, null, 4)
+  #fs.writeFileSync "./data/rooms.json", JSON.stringify(rooms_messages, null, 4)

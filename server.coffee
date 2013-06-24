@@ -5,16 +5,24 @@ request = require "request"
 
 ### Config ###
 cocity = require "./config/cocity.coffee"
-fq = require "./config/fq.coffee"
 
 
 require("zappajs") 4500, ->
+
+  ### Config ###
+  cocity = @conf = require "./config/cocity.coffee"
 
   @set "view engine": "jade"
   @use "static"
   @io.set "log level", 0
 
   @include "./lib/room_manager.coffee"
+  @include "./lib/twitter.coffee"
+
+  @get "/js/conf.js": ->
+    @send """
+      window.cocity = #{JSON.stringify cocity };
+    """
 
   # Extend with config and loading parameters
   view_extend = _(
@@ -35,14 +43,10 @@ require("zappajs") 4500, ->
     ]    
   ).defaults cocity
 
-  @get "/js/conf.js": ->
-    @send """
-      window.cocity = #{JSON.stringify cocity };
-    """
   @get "/_suggest_poi": ->
     request("https://api.foursquare.com/v2/venues/suggestcompletion?" +
-      "ll=#{@query.ll}&query=#{encodeURIComponent @query.search}&client_id=#{fq.client_id}&" +
-      "client_secret=#{fq.client_secret}&v=20130615&limit=10")
+      "ll=#{@query.ll}&query=#{encodeURIComponent @query.search}&client_id=#{cocity.foursquare.client_id}&" +
+      "client_secret=#{cocity.foursquare.client_secret}&v=20130615&limit=10")
     .pipe @res
 
   @get "/_address2geo": ->
