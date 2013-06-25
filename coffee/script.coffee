@@ -234,8 +234,7 @@ angular.module('cocity', ["google-maps", "LocalStorageModule"]).
           method: "GET"
           params: {ll: $scope.center.latitude + ',' + $scope.center.longitude, search: search}
         }).success( (data) ->
-          console.log data
-          $scope.poiResults = data.response.minivenues
+          $scope.poiResults = data.response.venues
         )
 
     $scope.addPoi = (name, lat, lng)->

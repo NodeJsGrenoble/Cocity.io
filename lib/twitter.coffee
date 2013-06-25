@@ -37,7 +37,7 @@ geolib = require "geolib"
             console.log status.entities.media[0].sizes.thumb
           @send_post 
             author: 
-              username: "#{status.user.name} (#{status.user.screen_name})"
+              username: "#{status.user.name} (@#{status.user.screen_name})"
               link: "http://twitter.com/" + status.user.screen_name
             content: status.text
             hashtags: _(status.entities.hashtags).pluck("text")

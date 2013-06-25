@@ -3,10 +3,6 @@ global.Q = require("q")
 global._ = require "underscore"
 request = require "request"
 
-### Config ###
-cocity = require "./config/cocity.coffee"
-
-
 require("zappajs") 4500, ->
 
   ### Config ###
@@ -21,7 +17,12 @@ require("zappajs") 4500, ->
 
   @get "/js/conf.js": ->
     @send """
-      window.cocity = #{JSON.stringify cocity };
+      window.cocity = #{JSON.stringify do -> 
+        ret = _(cocity).clone()
+        delete ret["twitter"]
+        delete ret["foursquare"]
+        ret 
+      };
     """
 
   # Extend with config and loading parameters
@@ -44,9 +45,9 @@ require("zappajs") 4500, ->
   ).defaults cocity
 
   @get "/_suggest_poi": ->
-    request("https://api.foursquare.com/v2/venues/suggestcompletion?" +
+    request("https://api.foursquare.com/v2/venues/search?" +
       "ll=#{@query.ll}&query=#{encodeURIComponent @query.search}&client_id=#{cocity.foursquare.client_id}&" +
-      "client_secret=#{cocity.foursquare.client_secret}&v=20130615&limit=10")
+      "client_secret=#{cocity.foursquare.client_secret}&v=20130615&limit=4")
     .pipe @res
 
   @get "/_address2geo": ->
