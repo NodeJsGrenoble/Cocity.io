@@ -369,6 +369,11 @@ angular.module('cocity', ["google-maps", "LocalStorageModule"]).
           add_or_update_channel room if room.name
 
     
+    socket.on "total_connected", (total_connected) ->
+      $scope.total_connected = total_connected
+      console.log "TOTAL CONNECTED", $scope.total_connected = total_connected
+
+
     socket.on "room_update", (room) ->
       console.log "room_update", room
       add_or_update_channel room

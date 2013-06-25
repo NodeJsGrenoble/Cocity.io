@@ -455,6 +455,10 @@
         return _results;
       });
     });
+    socket.on("total_connected", function(total_connected) {
+      $scope.total_connected = total_connected;
+      return console.log("TOTAL CONNECTED", $scope.total_connected = total_connected);
+    });
     socket.on("room_update", function(room) {
       console.log("room_update", room);
       return add_or_update_channel(room);

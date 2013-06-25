@@ -9,14 +9,18 @@ rooms_messages = {} #JSON.parse(fs.readFileSync "./data/rooms.json")
 
   @store = rooms_messages
 
-  @on "connection": ->
+  @on connection: ->
+    @broadcast "total_connected", @io.sockets.manager.rooms[""].length
+    @emit "total_connected", @io.sockets.manager.rooms[""].length
+
+    ###
     cookie_string = @socket.handshake.headers.cookie
     return unless cookie_string
     if res = cookie_string.match(/connect\.sid=s%3A([^\.]+)\./)
       session_id = decodeURIComponent res[1]
       @socket.set "sid", session_id
       console.log "connection", @id, session_id
-    ###
+
     @session (err,session) =>
       console.log @session, session
       #@session["ID"] = @id

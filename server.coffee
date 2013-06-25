@@ -58,9 +58,6 @@ require("zappajs") 4500, ->
     @render "index", view_extend
 
 
-#  @view "index": -
-  @on connection: -> console.log "Connected".green
-  # Rooms as middle war for dynamic routes
   @use (req, res, next) ->
     res.render "index", view_extend
 
