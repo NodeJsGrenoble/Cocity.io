@@ -281,8 +281,7 @@
             search: search
           }
         }).success(function(data) {
-          console.log(data);
-          return $scope.poiResults = data.response.minivenues;
+          return $scope.poiResults = data.response.venues;
         });
       }
     };

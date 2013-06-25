@@ -47,7 +47,7 @@ rooms_messages = {} #JSON.parse(fs.readFileSync "./data/rooms.json")
       messages: rooms_messages[channel] ? []
       pois: _(rooms_messages[channel]).filter((msg) -> msg.poi?.name).length
 
-  @send_post = send_post = (data) ->
+  @helper send_post: @send_post = send_post = (data) ->
     _(data.hashtags.concat [""]).each (hashtag) =>
       msg = _(data).defaults
         id: uuid.v4()
