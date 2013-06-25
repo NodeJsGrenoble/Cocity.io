@@ -1,9 +1,9 @@
-@import "compass";
+@import "bourbon/bourbon";
 
 @import "partials/_mixins";
-@import "compass/reset";
+@import "partials/reset";
 
-@include font-face("SS Standard", font-files("ss-standard.woff", "ss-standard.ttf", "ss-standard.svg"), "ss-standard.eot", normal, normal);
+@include font-face("SS Standard", 'fonts/ss-standard', normal, normal);
 
 $body-bg-color: #F3F3F3;
 
@@ -38,7 +38,7 @@ a{
 
 .header{
   background: $header-bg-color;
-  @include pie-clearfix;
+  @include clearfix;
   position: relative;
   box-shadow: 0 1px 0 darken($header-bg-color, 20%);
 }
@@ -80,7 +80,7 @@ a{
 }
 
 .tab-bar{
-  @include pie-clearfix;
+  @include clearfix;
   background: $tab-bar-bg;
   border-bottom: 1px solid darken($tab-bar-bg, 14%);
 
@@ -151,15 +151,15 @@ a{
   }
 }
 
-%tab-pane{
+.tab-pane-pattern{
   width: 90%;
   height: 90%;
   margin: 20px auto 0px auto;
 }
 
 .chat{
-  @extend %tab-pane;
-  padding-bottom: 100px;
+  @extend .tab-pane-pattern;
+  padding-bottom: 200px;
 }
 
 .tab-pane__title{
@@ -169,7 +169,7 @@ a{
 }
 
 .channels-list{
-  @include pie-clearfix;
+  @include clearfix;
   margin-bottom: 30px;
 }
 
@@ -370,7 +370,7 @@ $poi-search-bg: #2ecc71;
     box-shadow: inset 0 0 2px rgba(0,0,0,.3);
   }
 
-  @include input-placeholder{
+  @include placeholder{
     color: rgba(255,255,255,.8);
   }
 
@@ -608,12 +608,8 @@ $poi-search-bg: #2ecc71;
   max-height: 150px;
 }
 
-.slide-enter, .slide-leave { 
-  -webkit-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -moz-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -ms-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -o-transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  transition: .4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+.slide-enter, .slide-leave {
+  @include transition(.4s cubic-bezier(0.250, 0.250, 0.750, 0.750) all);
 }
 
 .slide-leave, .slide-enter.slide-enter-active {
