@@ -52,8 +52,8 @@ table {
   font-family: "SS Standard";
   font-weight: normal;
   font-style: normal;
-  src: url("fonts/ss-standard.eot");
-  src: url("fonts/ss-standard.eot?#iefix") format("embedded-opentype"), url("fonts/ss-standard.woff") format("woff"), url("fonts/ss-standard.ttf") format("truetype"), url("fonts/ss-standard.svg#SS Standard") format("svg"); }
+  src: url("../fonts/ss-standard.eot");
+  src: url("../fonts/ss-standard.eot?#iefix") format("embedded-opentype"), url("../fonts/ss-standard.woff") format("woff"), url("../fonts/ss-standard.ttf") format("truetype"), url("../fonts/ss-standard.svg#SS Standard") format("svg"); }
 
 /* line 26, ../../sass/main.scss */
 body {
