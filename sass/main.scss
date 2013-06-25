@@ -3,7 +3,7 @@
 @import "partials/_mixins";
 @import "partials/reset";
 
-@include font-face("SS Standard", 'fonts/ss-standard', normal, normal);
+@include font-face("SS Standard", '../fonts/ss-standard', normal, normal);
 
 $body-bg-color: #F3F3F3;
 
